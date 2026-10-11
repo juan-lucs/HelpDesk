@@ -1,5 +1,6 @@
 package com.juanlucas.helpdesk.controller;
 
+import com.juanlucas.helpdesk.Model.Entity.Tecnico;
 import com.juanlucas.helpdesk.Model.Entity.Usuario;
 import com.juanlucas.helpdesk.Service.UsuarioService;
 import lombok.RequiredArgsConstructor;
@@ -14,9 +15,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class UsuarioController {
     private final UsuarioService service;
 
-    @PostMapping
-    public void salvar(@RequestBody Usuario u) {
-//        service.salvar(u);
-        System.out.println("Usuario Criado com sucesso");
+    @PostMapping("/usuarios")
+    public Usuario salvarUsuario(@RequestBody Usuario usuario) {
+        return service.salvarUsuario(usuario);
+    }
+
+    @PostMapping("/tecnicos")
+    public Tecnico salvarTecnico(@RequestBody Tecnico tecnico) {
+        return service.salvarTecnico(tecnico);
     }
 }
