@@ -39,13 +39,20 @@ public class Chamado {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    private Statuschamado Status = Statuschamado.ABERTO;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private PrioridadeChamado prioridade;
+
+    @ManyToOne
+    @JoinColumn(name = "usuario_id")
+    private Usuario usuario;
 
     // UM chamado tem MUITOS históricos.
     // cascade = ALL: salvar/atualizar/deletar o chamado faz o mesmo nos históricos.
     // orphanRemoval = true: remover um histórico da lista também o apaga do banco.
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-
     // Cria a coluna "chamado_id" na tabela de HISTORICO (ESTRAngeira para este chamado).
     // Sem isso, o JPA criaria uma tabela com o id de chamado e historico
     // nullable = false: o histórico nunca existe sem um chamado, e o Hibernate
@@ -63,7 +70,4 @@ public class Chamado {
     @Column(nullable = false)
     private LocalDateTime dataCriacao;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Statuschamado Status = Statuschamado.ABERTO;
 }

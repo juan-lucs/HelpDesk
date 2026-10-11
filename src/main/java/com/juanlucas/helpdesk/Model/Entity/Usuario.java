@@ -4,15 +4,19 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
 @Table(name = "usuario")
-@ToString
+@ToString(exclude = {"chamados"})
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @Getter
 @Setter
 public class Usuario {
+
 
     @Id
     @GeneratedValue
@@ -23,4 +27,8 @@ public class Usuario {
 
     @Column(unique = true, nullable = false, length = 150)
     private String email;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "usuario")
+    private List<Chamado> chamados = new ArrayList<>();
+
 }
