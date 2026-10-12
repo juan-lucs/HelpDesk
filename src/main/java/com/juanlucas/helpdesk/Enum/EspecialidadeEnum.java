@@ -4,6 +4,5 @@ public enum EspecialidadeEnum {
     HARDWARE,
     SOFTWARE,
     REDES,
-    USUARIO,
     OUTROS
 }
