@@ -8,5 +8,26 @@ public enum Statuschamado {
   ,
     RESOLVIDO
   ,
-    FECHADO
+    FECHADO,
+
+    CANCELADO;
+
+    public boolean alteracao(Statuschamado statusNovo) {
+        return switch (this) {
+            case ABERTO ->
+                    statusNovo == CANCELADO || statusNovo == EM_ATENDIMENTO || statusNovo == AGUARDANDO_USUARIO;
+
+            case EM_ATENDIMENTO ->
+                statusNovo == CANCELADO || statusNovo == RESOLVIDO || statusNovo == AGUARDANDO_USUARIO;
+
+            case AGUARDANDO_USUARIO ->
+                    statusNovo == CANCELADO || statusNovo == RESOLVIDO || statusNovo == EM_ATENDIMENTO;
+
+            case RESOLVIDO ->
+                statusNovo == EM_ATENDIMENTO;
+
+            case FECHADO, CANCELADO ->
+                false;
+        };
+    }
 }
