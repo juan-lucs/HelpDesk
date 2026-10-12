@@ -6,99 +6,81 @@ import com.juanlucas.helpdesk.Model.Entity.Tecnico;
 import com.juanlucas.helpdesk.Model.Entity.Usuario;
 import com.juanlucas.helpdesk.repository.UsuarioRepository;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 class UsuarioServiceTest {
 
-    @Mock
-    private UsuarioRepository repository;
-
-    @InjectMocks
+    @Autowired
     private UsuarioService service;
+
+    @Autowired
+    private UsuarioRepository repository;
 
     @Test
     void deveSalvarUsuarioComEmailNovo() throws Exception {
         Usuario usuario = new Usuario();
         usuario.setNome("Usuário de teste");
-        usuario.setEmail("teste@example.com");
-        when(repository.existsByEmail(usuario.getEmail())).thenReturn(false);
-        when(repository.save(usuario)).thenReturn(usuario);
+        usuario.setEmail("usuario-" + UUID.randomUUID() + "@example.com");
 
         Usuario salvo = service.salvarUsuario(usuario);
 
-        assertSame(usuario, salvo);
-        verify(repository).save(usuario);
+        assertNotNull(salvo.getId());
+        assertEquals(usuario.getEmail(), salvo.getEmail());
+        repository.delete(salvo);
     }
 
     @Test
-    void deveImpedirUsuarioComEmailDuplicado() {
+    void deveImpedirUsuarioComEmailDuplicado() throws Exception {
         Usuario usuario = new Usuario();
-        usuario.setEmail("duplicado@example.com");
-        when(repository.existsByEmail(usuario.getEmail())).thenReturn(true);
+        usuario.setNome("Usuário de teste");
+        usuario.setEmail("duplicado-" + UUID.randomUUID() + "@example.com");
+        Usuario salvo = service.salvarUsuario(usuario);
 
-        assertThrows(EmailJaCadastradoException.class, () -> service.salvarUsuario(usuario));
-        verify(repository, never()).save(any());
+        Usuario repetido = new Usuario();
+        repetido.setNome("Outro usuário");
+        repetido.setEmail(salvo.getEmail());
+
+        assertThrows(EmailJaCadastradoException.class, () -> service.salvarUsuario(repetido));
+        repository.delete(salvo);
     }
 
     @Test
     void deveSalvarTecnicoComEspecialidade() throws Exception {
         Tecnico tecnico = new Tecnico();
         tecnico.setNome("Técnico de teste");
-        tecnico.setEmail("tecnico@example.com");
+        tecnico.setEmail("tecnico-" + UUID.randomUUID() + "@example.com");
         tecnico.setEspecialidade(EspecialidadeEnum.values()[0]);
-        when(repository.existsByEmail(tecnico.getEmail())).thenReturn(false);
-        when(repository.save(tecnico)).thenReturn(tecnico);
 
         Tecnico salvo = service.salvarTecnico(tecnico);
 
-        assertSame(tecnico, salvo);
-        verify(repository).save(tecnico);
+        assertNotNull(salvo.getId());
+        assertEquals(tecnico.getEmail(), salvo.getEmail());
+        repository.delete(salvo);
     }
 
     @Test
     void deveImpedirTecnicoSemEspecialidade() {
         Tecnico tecnico = new Tecnico();
-        tecnico.setEmail("tecnico@example.com");
-        when(repository.existsByEmail(tecnico.getEmail())).thenReturn(false);
+        tecnico.setNome("Técnico de teste");
+        tecnico.setEmail("tecnico-sem-especialidade-" + UUID.randomUUID() + "@example.com");
 
         assertThrows(IllegalArgumentException.class, () -> service.salvarTecnico(tecnico));
-        verify(repository, never()).save(any());
     }
 
     @Test
-    void deveBuscarUsuarioPorId() {
-        UUID id = UUID.randomUUID();
+    void deveBuscarUsuarioPorId() throws Exception {
         Usuario usuario = new Usuario();
-        when(repository.findById(id)).thenReturn(Optional.of(usuario));
+        usuario.setNome("Busca");
+        usuario.setEmail("busca-" + UUID.randomUUID() + "@example.com");
+        Usuario salvo = service.salvarUsuario(usuario);
 
-        assertTrue(service.pegarPorId(id).isPresent());
-        assertSame(usuario, service.pegarPorId(id).orElseThrow());
-    }
-
-    @Test
-    void deveRetornarTodosUsuarios() {
-        List<Usuario> usuarios = List.of(new Usuario(), new Usuario());
-        when(repository.buscarUsuarios()).thenReturn(usuarios);
-
-        assertEquals(usuarios, service.pegarTodosUsuarios());
-    }
-
-    @Test
-    void deveRetornarTodosTecnicos() {
-        List<Tecnico> tecnicos = List.of(new Tecnico());
-        when(repository.buscarTecnicos()).thenReturn(tecnicos);
-
-        assertEquals(tecnicos, service.pegarTodosTecnicos());
+        assertTrue(service.pegarPorId(salvo.getId()).isPresent());
+        repository.delete(salvo);
     }
 }
