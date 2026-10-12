@@ -7,6 +7,10 @@ import com.juanlucas.helpdesk.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 public class UsuarioService {
@@ -40,5 +44,15 @@ public class UsuarioService {
         }
     }
 
+    public Optional<Usuario> pegarPorId(UUID idUser) {
+        return repository.findById(idUser);
+    }
 
+    public List<Usuario> pegarTodosUsuarios(){
+        return repository.buscarUsuarios();
+    }
+
+    public List<Tecnico> pegarTodosTecnicos(){
+        return repository.buscarTecnicos();
+    }
 }
