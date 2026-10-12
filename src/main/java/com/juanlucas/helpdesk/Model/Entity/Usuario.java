@@ -1,5 +1,6 @@
 package com.juanlucas.helpdesk.Model.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,8 +28,8 @@ public class Usuario {
 
     @Column(unique = true, nullable = false, length = 150)
     private String email;
-
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "usuario")
+    @JsonIgnore // TODO: migrar para DTO
+    @OneToMany( fetch = FetchType.LAZY, mappedBy = "usuarioCriador")
     private List<Chamado> chamados = new ArrayList<>();
 
 }

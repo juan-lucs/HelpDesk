@@ -29,7 +29,7 @@ public class ChamadoRepositoryTest {
         var c = new Chamado();
         c.setTitulo("TESTE TITULO");
         c.setDescricao("TESTE DESCRICAO");
-        c.setCategoria(CategoriaChamado.valueOf("REDE"));
+        c.setCategoria(CategoriaChamado.valueOf("REDES"));
         c.setPrioridade(PrioridadeChamado.valueOf("ALTA"));
         c.setUsuario(usuario);
         // c.setStatus(); NAO PRECISA PORQUE O CHAMADO JÁ É CRIADO COM STATUS = ABERTO

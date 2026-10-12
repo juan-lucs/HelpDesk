@@ -46,8 +46,13 @@ public class Chamado {
     private PrioridadeChamado prioridade;
 
     @ManyToOne
-    @JoinColumn(name = "usuario_id")
-    private Usuario usuario;
+    @JoinColumn(name = "usuario_id", nullable = false)
+    private Usuario usuarioCriador;
+
+    @ManyToOne
+    @JoinColumn(name = "tecnico_id")
+    private Tecnico tecnicoResponsavel;
+
 
     // UM chamado tem MUITOS históricos.
     // cascade = ALL: salvar/atualizar/deletar o chamado faz o mesmo nos históricos.
