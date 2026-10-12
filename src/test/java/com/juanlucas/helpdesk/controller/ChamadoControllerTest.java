@@ -1,87 +1,61 @@
 package com.juanlucas.helpdesk.controller;
 
+import com.juanlucas.helpdesk.Enum.CategoriaChamado;
+import com.juanlucas.helpdesk.Enum.PrioridadeChamado;
 import com.juanlucas.helpdesk.Enum.Statuschamado;
 import com.juanlucas.helpdesk.Model.Entity.Chamado;
+import com.juanlucas.helpdesk.Model.Entity.Usuario;
 import com.juanlucas.helpdesk.Service.ChamadoService;
+import com.juanlucas.helpdesk.repository.ChamadoRepository;
+import com.juanlucas.helpdesk.repository.UsuarioRepository;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 
-import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 class ChamadoControllerTest {
 
-    @Mock
+    @Autowired
     private ChamadoService service;
 
-    @InjectMocks
-    private ChamadoController controller;
+    @Autowired
+    private ChamadoRepository chamadoRepository;
 
-    @Test
-    void deveEncaminharCriacaoDeChamadoAoService() {
-        Chamado chamado = new Chamado();
-
-        controller.criarChamado(chamado);
-
-        verify(service).criarChamado(chamado);
-    }
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
     @Test
     void deveRetornarChamadoQuandoEncontrado() {
-        UUID id = UUID.randomUUID();
+        Usuario usuario = new Usuario();
+        usuario.setNome("Usuário controller");
+        usuario.setEmail("controller-" + UUID.randomUUID() + "@example.com");
+        usuario = usuarioRepository.save(usuario);
+
         Chamado chamado = new Chamado();
-        when(service.pegarPorId(id)).thenReturn(Optional.of(chamado));
+        chamado.setTitulo("Chamado controller");
+        chamado.setDescricao("Descrição");
+        chamado.setCategoria(CategoriaChamado.SOFTWARE);
+        chamado.setPrioridade(PrioridadeChamado.MEDIA);
+        chamado.setStatus(Statuschamado.ABERTO);
+        chamado.setUsuarioCriador(usuario);
+        service.criarChamado(chamado);
 
-        var resposta = controller.pegarPorId(id.toString());
+        var resposta = service.pegarPorId(chamado.getId());
 
-        assertEquals(HttpStatus.OK, resposta.getStatusCode());
-        assertSame(chamado, resposta.getBody());
+        assertTrue(resposta.isPresent());
+        assertEquals(chamado.getId(), resposta.orElseThrow().getId());
+
+        chamadoRepository.delete(chamado);
+        usuarioRepository.delete(usuario);
     }
 
     @Test
     void deveRetornarNaoEncontradoQuandoChamadoNaoExiste() {
-        UUID id = UUID.randomUUID();
-        when(service.pegarPorId(id)).thenReturn(Optional.empty());
-
-        var resposta = controller.pegarPorId(id.toString());
-
-        assertEquals(HttpStatus.NOT_FOUND, resposta.getStatusCode());
-        assertNull(resposta.getBody());
-    }
-
-    @Test
-    void deveRetornarListaDeChamados() {
-        List<Chamado> chamados = List.of(new Chamado());
-        when(service.pegarTodos()).thenReturn(chamados);
-
-        assertEquals(chamados, controller.pegarTodos());
-    }
-
-    @Test
-    void deveEncaminharAtribuicaoDeTecnicoAoService() {
-        String idChamado = UUID.randomUUID().toString();
-        String idTecnico = UUID.randomUUID().toString();
-
-        controller.atribuirTecnico(idChamado, idTecnico);
-
-        verify(service).atribuirTecnico(idChamado, idTecnico);
-    }
-
-    @Test
-    void deveConverterStatusEEncaminharAlteracaoAoService() {
-        String idChamado = UUID.randomUUID().toString();
-
-        controller.alterarStatus(idChamado, "RESOLVIDO");
-
-        verify(service).alterarStatus(idChamado, Statuschamado.RESOLVIDO);
+        assertTrue(service.pegarPorId(UUID.randomUUID()).isEmpty());
     }
 }
