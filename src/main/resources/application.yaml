@@ -1,3 +1,13 @@
 spring:
   application:
     name: helpdesk
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/helpdesk
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
