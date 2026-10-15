@@ -5,8 +5,7 @@ public enum Statuschamado {
     EM_ATENDIMENTO
  ,
   AGUARDANDO_USUARIO
-  ,
-    RESOLVIDO
+
   ,
     FECHADO,
 
@@ -18,15 +17,15 @@ public enum Statuschamado {
                     statusNovo == CANCELADO || statusNovo == EM_ATENDIMENTO || statusNovo == AGUARDANDO_USUARIO;
 
             case EM_ATENDIMENTO ->
-                statusNovo == CANCELADO || statusNovo == RESOLVIDO || statusNovo == AGUARDANDO_USUARIO;
+                statusNovo == CANCELADO ||  statusNovo == AGUARDANDO_USUARIO;
 
             case AGUARDANDO_USUARIO ->
-                    statusNovo == CANCELADO || statusNovo == RESOLVIDO || statusNovo == EM_ATENDIMENTO;
+                    statusNovo == CANCELADO  || statusNovo == EM_ATENDIMENTO;
 
-            case RESOLVIDO ->
+            case FECHADO ->
                 statusNovo == EM_ATENDIMENTO;
 
-            case FECHADO, CANCELADO ->
+            case  CANCELADO ->
                 false;
         };
     }

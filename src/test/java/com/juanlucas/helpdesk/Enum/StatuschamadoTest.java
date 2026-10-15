@@ -11,9 +11,9 @@ class StatuschamadoTest {
         assertTrue(Statuschamado.ABERTO.alteracao(Statuschamado.CANCELADO));
         assertTrue(Statuschamado.ABERTO.alteracao(Statuschamado.EM_ATENDIMENTO));
         assertTrue(Statuschamado.ABERTO.alteracao(Statuschamado.AGUARDANDO_USUARIO));
-        assertTrue(Statuschamado.EM_ATENDIMENTO.alteracao(Statuschamado.RESOLVIDO));
+        assertTrue(Statuschamado.EM_ATENDIMENTO.alteracao(Statuschamado.FECHADO));
         assertTrue(Statuschamado.AGUARDANDO_USUARIO.alteracao(Statuschamado.EM_ATENDIMENTO));
-        assertTrue(Statuschamado.RESOLVIDO.alteracao(Statuschamado.EM_ATENDIMENTO));
+        assertTrue(Statuschamado.FECHADO.alteracao(Statuschamado.EM_ATENDIMENTO));
     }
 
     @Test

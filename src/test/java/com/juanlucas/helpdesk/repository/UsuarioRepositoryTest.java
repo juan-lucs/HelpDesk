@@ -8,6 +8,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.UUID;
+
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
@@ -31,12 +33,24 @@ public class UsuarioRepositoryTest {
     }
     @Test
     public void salvarMesmoEmail() {
-        var u = new Usuario();
-        u.setNome("teste");
-        u.setEmail("teste@gmail.com");
-        assertThrows(
-                EmailJaCadastradoException.class,
-                () -> service.salvarUsuario(u)
-        );
+        String email = "teste-" + UUID.randomUUID() + "@gmail.com";
+
+        var existente = new Usuario();
+        existente.setNome("existente");
+        existente.setEmail(email);
+        var salvo = service.salvarUsuario(existente);
+
+        var repetido = new Usuario();
+        repetido.setNome("teste");
+        repetido.setEmail(email);
+
+        try {
+            assertThrows(
+                    EmailJaCadastradoException.class,
+                    () -> service.salvarUsuario(repetido)
+            );
+        } finally {
+            repository.delete(salvo);
+        }
     }
 }
