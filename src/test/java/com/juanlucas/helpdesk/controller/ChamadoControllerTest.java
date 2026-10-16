@@ -11,15 +11,17 @@ import com.juanlucas.helpdesk.repository.UsuarioRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
+@Transactional
 class ChamadoControllerTest {
 
+    // Estes testes exercitam o serviço diretamente; não validam requisições HTTP.
     @Autowired
     private ChamadoService service;
 
@@ -32,12 +34,12 @@ class ChamadoControllerTest {
     @Test
     void deveRetornarChamadoQuandoEncontrado() {
         Usuario usuario = new Usuario();
-        usuario.setNome("Usuário controller");
+        usuario.setNome("Usuário de teste");
         usuario.setEmail("controller-" + UUID.randomUUID() + "@example.com");
-        usuario = usuarioRepository.save(usuario);
+        usuarioRepository.save(usuario);
 
         Chamado chamado = new Chamado();
-        chamado.setTitulo("Chamado controller");
+        chamado.setTitulo("Chamado de teste");
         chamado.setDescricao("Descrição");
         chamado.setCategoria(CategoriaChamado.SOFTWARE);
         chamado.setPrioridade(PrioridadeChamado.MEDIA);
@@ -49,13 +51,11 @@ class ChamadoControllerTest {
 
         assertTrue(resposta.isPresent());
         assertEquals(chamado.getId(), resposta.orElseThrow().getId());
-
-        chamadoRepository.delete(chamado);
-        usuarioRepository.delete(usuario);
+        assertEquals("Chamado de teste", resposta.orElseThrow().getTitulo());
     }
 
     @Test
-    void deveRetornarNaoEncontradoQuandoChamadoNaoExiste() {
+    void deveRetornarVazioQuandoChamadoNaoExiste() {
         assertTrue(service.pegarPorId(UUID.randomUUID()).isEmpty());
     }
 }

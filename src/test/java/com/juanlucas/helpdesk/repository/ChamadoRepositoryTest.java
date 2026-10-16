@@ -9,30 +9,44 @@ import com.juanlucas.helpdesk.Service.ChamadoService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-public class ChamadoRepositoryTest {
+@Transactional
+class ChamadoRepositoryTest {
+
     @Autowired
-    ChamadoRepository repository;
+    private ChamadoRepository repository;
+
     @Autowired
-    ChamadoService service;
+    private ChamadoService service;
+
     @Autowired
-    UsuarioRepository usuarioRepository;
+    private UsuarioRepository usuarioRepository;
 
     @Test
-    public void criarChamado() {
-        var usuario = new Usuario();
+    void deveCriarChamadoComStatusInicialEDataDeCriacao() {
+        Usuario usuario = new Usuario();
         usuario.setNome("Usuário de teste");
-        usuario.setEmail("usuario.chamado@teste.com");
-        usuario = usuarioRepository.save(usuario);
+        usuario.setEmail("usuario-chamado-" + UUID.randomUUID() + "@example.com");
+        usuarioRepository.save(usuario);
 
-        var c = new Chamado();
-        c.setTitulo("TESTE TITULO");
-        c.setDescricao("TESTE DESCRICAO");
-        c.setCategoria(CategoriaChamado.valueOf("REDES"));
-        c.setPrioridade(PrioridadeChamado.valueOf("ALTA"));
-        c.setUsuario(usuario);
-        // c.setStatus(); NAO PRECISA PORQUE O CHAMADO JÁ É CRIADO COM STATUS = ABERTO
-        service.criarChamado(c);
+        Chamado chamado = new Chamado();
+        chamado.setTitulo("Título de teste");
+        chamado.setDescricao("Descrição de teste");
+        chamado.setCategoria(CategoriaChamado.REDE);
+        chamado.setPrioridade(PrioridadeChamado.ALTA);
+        chamado.setUsuarioCriador(usuario);
+
+        service.criarChamado(chamado);
+
+        assertNotNull(chamado.getId());
+        assertNotNull(chamado.getDataCriacao());
+        assertEquals(Statuschamado.ABERTO, chamado.getStatus());
+        assertTrue(repository.findById(chamado.getId()).isPresent());
     }
 }
