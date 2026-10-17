@@ -24,17 +24,22 @@ public class ComentarioService {
     private final UsuarioRepository repositoryUsuario;
 
     @Transactional
-    public void criarComentario(ComentariosChamado com, Chamado chamado, Usuario Autor) {
-        if ( !(repositoryChamado.existsById(chamado.getId())) ) {
-            throw new ChamadoNaoEncontradoException("Chamado não existe!");
-        } else if (chamado.getStatus() == Statuschamado.FECHADO || chamado.getStatus() == Statuschamado.CANCELADO ) {
-            throw new ChamadoFechadoouCanceladoException("Um chamado " + chamado.getStatus() + " não pode receber comentários!");
-        } else if ( !(repositoryUsuario.existsById(Autor.getId())) ) {
-            throw new UsuarioNaoEncontradoException("Usuario não encontrado!");
+    public void criarComentario(ComentariosChamado com, Chamado chamado, Usuario autor) {
+        Chamado chamadoBanco = repositoryChamado.findById(chamado.getId())
+                .orElseThrow(() ->
+                        new ChamadoNaoEncontradoException("Chamado não existe!"));
+
+        if (chamadoBanco.getStatus() == Statuschamado.FECHADO || chamadoBanco.getStatus() == Statuschamado.CANCELADO ) {
+            throw new ChamadoFechadoouCanceladoException("Um chamado " + chamadoBanco.getStatus() + " não pode receber comentários!");
         }
-            com.setAutor(Autor);
-            com.setDataComentario(LocalDateTime.now());
-            chamado.getComentarios().add(com);
-            repositoryChamado.save(chamado);
+
+        Usuario autorBanco = repositoryUsuario.findById(autor.getId())
+                .orElseThrow(() ->
+                        new UsuarioNaoEncontradoException("Usuário não encontrado!"));
+
+        com.setAutor(autor);
+        com.setDataComentario(LocalDateTime.now());
+        chamadoBanco.getComentarios().add(com);
+        repositoryChamado.save(chamadoBanco);
     }
 }
