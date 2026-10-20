@@ -5,12 +5,11 @@ public enum Statuschamado {
     EM_ATENDIMENTO
  ,
   AGUARDANDO_USUARIO
-  ,
-    RESOLVIDO
-  ,
-    FECHADO,
 
-    CANCELADO;
+  ,
+    FECHADO, // FECHADO seria quando o Tecnico fecha o chamado
+
+    CANCELADO; // cancelado seria quando o USUÁRIO cancela o teste
 
     public boolean alteracao(Statuschamado statusNovo) {
         return switch (this) {
@@ -18,15 +17,15 @@ public enum Statuschamado {
                     statusNovo == CANCELADO || statusNovo == EM_ATENDIMENTO || statusNovo == AGUARDANDO_USUARIO;
 
             case EM_ATENDIMENTO ->
-                statusNovo == CANCELADO || statusNovo == RESOLVIDO || statusNovo == AGUARDANDO_USUARIO;
+                statusNovo == CANCELADO ||  statusNovo == AGUARDANDO_USUARIO; // O Tecnico pergunta para o usuário se o problema foi resolvido, antes de fechar o chamado
 
             case AGUARDANDO_USUARIO ->
-                    statusNovo == CANCELADO || statusNovo == RESOLVIDO || statusNovo == EM_ATENDIMENTO;
+                    statusNovo == CANCELADO  || statusNovo == EM_ATENDIMENTO || statusNovo == FECHADO;
 
-            case RESOLVIDO ->
+            case FECHADO ->
                 statusNovo == EM_ATENDIMENTO;
 
-            case FECHADO, CANCELADO ->
+            case  CANCELADO ->
                 false;
         };
     }
