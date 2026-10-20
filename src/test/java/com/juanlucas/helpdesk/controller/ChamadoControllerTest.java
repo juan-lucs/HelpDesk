@@ -31,12 +31,12 @@ class ChamadoControllerTest {
 
     @Test
     void deveRetornarChamadoQuandoEncontrado() {
-        Usuario usuario = new Usuario();
+        var usuario = new Usuario();
         usuario.setNome("Usuário controller");
         usuario.setEmail("controller-" + UUID.randomUUID() + "@example.com");
         usuario = usuarioRepository.save(usuario);
 
-        Chamado chamado = new Chamado();
+        var chamado = new Chamado();
         chamado.setTitulo("Chamado controller");
         chamado.setDescricao("Descrição");
         chamado.setCategoria(CategoriaChamado.SOFTWARE);

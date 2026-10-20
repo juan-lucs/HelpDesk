@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -53,6 +54,7 @@ class ChamadoServiceTest {
         chamado.setPrioridade(PrioridadeChamado.MEDIA);
         chamado.setStatus(status);
         chamado.setUsuarioCriador(usuario);
+        chamado.setDataCriacao(LocalDateTime.now());
         return chamadoRepository.save(chamado);
     }
 
@@ -79,7 +81,7 @@ class ChamadoServiceTest {
         Usuario usuario = criarUsuario();
         Tecnico tecnico = criarTecnico();
         Chamado chamado = criarChamado(usuario, Statuschamado.ABERTO);
-
+        service.criarChamado(chamado);
         service.atribuirTecnico(chamado.getId().toString(), tecnico.getId().toString());
 
         Chamado atualizado = chamadoRepository.findById(chamado.getId()).orElseThrow();
