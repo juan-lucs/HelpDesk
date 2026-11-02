@@ -1,6 +1,6 @@
 package com.juanlucas.helpdesk.Service;
 
-import com.juanlucas.helpdesk.Enum.Statuschamado;
+import com.juanlucas.helpdesk.Enum.StatusChamado;
 import com.juanlucas.helpdesk.Exception.ChamadoNaoEncontradoException;
 import com.juanlucas.helpdesk.Exception.UsuarioNaoEncontradoException;
 import com.juanlucas.helpdesk.Model.Entity.Chamado;
@@ -79,7 +79,7 @@ public class HistoricoService {
     // Regra de negócio: Toda alteração de status deve ser registrada no histórico
     // Ex: "11:15 — Status alterado para EM_ATENDIMENTO"
     @Transactional
-    public Historico registrarAlteracaoStatus(Chamado chamado, Usuario autor, Statuschamado statusAnterior, Statuschamado statusNovo) {
+    public Historico registrarAlteracaoStatus(Chamado chamado, Usuario autor, StatusChamado statusAnterior, StatusChamado statusNovo) {
         String descricao;
         if (statusAnterior == null) {
             descricao = "Status alterado para " + statusNovo;

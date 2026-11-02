@@ -2,7 +2,7 @@ package com.juanlucas.helpdesk.Service;
 
 import com.juanlucas.helpdesk.Enum.CategoriaChamado;
 import com.juanlucas.helpdesk.Enum.PrioridadeChamado;
-import com.juanlucas.helpdesk.Enum.Statuschamado;
+import com.juanlucas.helpdesk.Enum.StatusChamado;
 import com.juanlucas.helpdesk.Exception.ChamadoFechadoouCanceladoException;
 import com.juanlucas.helpdesk.Exception.ChamadocomTecnicojaResponsavelException;
 import com.juanlucas.helpdesk.Model.Entity.Chamado;
@@ -46,7 +46,7 @@ class ChamadoServiceTest {
         return usuarioRepository.save(tecnico);
     }
 
-    private Chamado criarChamado(Usuario usuario, Statuschamado status) {
+    private Chamado criarChamado(Usuario usuario, StatusChamado status) {
         Chamado chamado = new Chamado();
         chamado.setTitulo("Chamado de teste");
         chamado.setDescricao("Descrição do chamado de teste");
@@ -66,7 +66,7 @@ class ChamadoServiceTest {
         chamado.setDescricao("Descrição");
         chamado.setCategoria(CategoriaChamado.SOFTWARE);
         chamado.setPrioridade(PrioridadeChamado.MEDIA);
-        chamado.setStatus(Statuschamado.ABERTO);
+        chamado.setStatus(StatusChamado.ABERTO);
         chamado.setUsuarioCriador(usuario);
 
         service.criarChamado(chamado);
@@ -80,12 +80,12 @@ class ChamadoServiceTest {
     void deveAtribuirTecnicoEAlterarStatus() {
         Usuario usuario = criarUsuario();
         Tecnico tecnico = criarTecnico();
-        Chamado chamado = criarChamado(usuario, Statuschamado.ABERTO);
+        Chamado chamado = criarChamado(usuario, StatusChamado.ABERTO);
         service.criarChamado(chamado);
         service.atribuirTecnico(chamado.getId().toString(), tecnico.getId().toString());
 
         Chamado atualizado = chamadoRepository.findById(chamado.getId()).orElseThrow();
-        assertEquals(Statuschamado.EM_ATENDIMENTO, atualizado.getStatus());
+        assertEquals(StatusChamado.EM_ATENDIMENTO, atualizado.getStatus());
         assertEquals(tecnico.getId(), atualizado.getTecnicoResponsavel().getId());
 
         chamadoRepository.delete(chamado);
@@ -97,7 +97,7 @@ class ChamadoServiceTest {
     void deveImpedirAtribuicaoQuandoChamadoJaTemTecnico() {
         Usuario usuario = criarUsuario();
         Tecnico tecnico = criarTecnico();
-        Chamado chamado = criarChamado(usuario, Statuschamado.ABERTO);
+        Chamado chamado = criarChamado(usuario, StatusChamado.ABERTO);
         chamado.setTecnicoResponsavel(tecnico);
         chamadoRepository.save(chamado);
 
@@ -113,7 +113,7 @@ class ChamadoServiceTest {
     void deveImpedirAtribuicaoParaChamadoFechado() {
         Usuario usuario = criarUsuario();
         Tecnico tecnico = criarTecnico();
-        Chamado chamado = criarChamado(usuario, Statuschamado.FECHADO);
+        Chamado chamado = criarChamado(usuario, StatusChamado.FECHADO);
 
         assertThrows(ChamadoFechadoouCanceladoException.class,
                 () -> service.atribuirTecnico(chamado.getId().toString(), tecnico.getId().toString()));
@@ -126,11 +126,11 @@ class ChamadoServiceTest {
     @Test
     void devePermitirCancelarChamadoSemTecnico() {
         Usuario usuario = criarUsuario();
-        Chamado chamado = criarChamado(usuario, Statuschamado.ABERTO);
+        Chamado chamado = criarChamado(usuario, StatusChamado.ABERTO);
 
-        service.alterarStatus(chamado.getId().toString(), Statuschamado.CANCELADO);
+        service.alterarStatus(chamado.getId().toString(), StatusChamado.CANCELADO);
 
-        assertEquals(Statuschamado.CANCELADO,
+        assertEquals(StatusChamado.CANCELADO,
                 chamadoRepository.findById(chamado.getId()).orElseThrow().getStatus());
 
         chamadoRepository.delete(chamado);

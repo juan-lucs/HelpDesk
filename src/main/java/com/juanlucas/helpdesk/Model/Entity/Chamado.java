@@ -2,7 +2,7 @@ package com.juanlucas.helpdesk.Model.Entity;
 
 import com.juanlucas.helpdesk.Enum.CategoriaChamado;
 import com.juanlucas.helpdesk.Enum.PrioridadeChamado;
-import com.juanlucas.helpdesk.Enum.Statuschamado;
+import com.juanlucas.helpdesk.Enum.StatusChamado;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -39,7 +39,7 @@ public class Chamado {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Statuschamado Status = Statuschamado.ABERTO;
+    private StatusChamado Status = StatusChamado.ABERTO;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

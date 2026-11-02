@@ -2,7 +2,7 @@ package com.juanlucas.helpdesk.repository;
 
 import com.juanlucas.helpdesk.Enum.CategoriaChamado;
 import com.juanlucas.helpdesk.Enum.PrioridadeChamado;
-import com.juanlucas.helpdesk.Enum.Statuschamado;
+import com.juanlucas.helpdesk.Enum.StatusChamado;
 import com.juanlucas.helpdesk.Model.Entity.Chamado;
 import com.juanlucas.helpdesk.Model.Entity.Usuario;
 import com.juanlucas.helpdesk.Service.ChamadoService;
@@ -41,7 +41,7 @@ public class ChamadoRepositoryTest {
 
         assertNotNull(c.getId());
         assertNotNull(c.getDataCriacao());
-        assertEquals(Statuschamado.ABERTO, c.getStatus());
+        assertEquals(StatusChamado.ABERTO, c.getStatus());
         assertTrue(repository.findById(c.getId()).isPresent());
 
         repository.delete(c);

@@ -2,7 +2,7 @@ package com.juanlucas.helpdesk.controller;
 
 import com.juanlucas.helpdesk.Enum.CategoriaChamado;
 import com.juanlucas.helpdesk.Enum.PrioridadeChamado;
-import com.juanlucas.helpdesk.Enum.Statuschamado;
+import com.juanlucas.helpdesk.Enum.StatusChamado;
 import com.juanlucas.helpdesk.Model.Entity.Chamado;
 import com.juanlucas.helpdesk.Model.Entity.Usuario;
 import com.juanlucas.helpdesk.Service.ChamadoService;
@@ -11,7 +11,6 @@ import com.juanlucas.helpdesk.repository.UsuarioRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
 
 import java.util.UUID;
 
@@ -41,7 +40,7 @@ class ChamadoControllerTest {
         chamado.setDescricao("Descrição");
         chamado.setCategoria(CategoriaChamado.SOFTWARE);
         chamado.setPrioridade(PrioridadeChamado.MEDIA);
-        chamado.setStatus(Statuschamado.ABERTO);
+        chamado.setStatus(StatusChamado.ABERTO);
         chamado.setUsuarioCriador(usuario);
         service.criarChamado(chamado);
 

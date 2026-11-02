@@ -1,6 +1,6 @@
 package com.juanlucas.helpdesk.controller;
 
-import com.juanlucas.helpdesk.Enum.Statuschamado;
+import com.juanlucas.helpdesk.Enum.StatusChamado;
 import com.juanlucas.helpdesk.Model.Entity.Chamado;
 import com.juanlucas.helpdesk.Service.ChamadoService;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +41,6 @@ public class ChamadoController {
 
     @PatchMapping("/alterarStatus/{id}")
     public void alterarStatus(@PathVariable("id") String idChamado, String statusNovo) {
-        service.alterarStatus(idChamado, Statuschamado.valueOf(statusNovo));
+        service.alterarStatus(idChamado, StatusChamado.valueOf(statusNovo));
     }
 }

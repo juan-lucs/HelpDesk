@@ -1,6 +1,6 @@
 package com.juanlucas.helpdesk.Model.Entity;
 
-import com.juanlucas.helpdesk.Enum.Statuschamado;
+import com.juanlucas.helpdesk.Enum.StatusChamado;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -29,5 +29,5 @@ public class Historico {
 
         @Enumerated(EnumType.STRING)
         @Column(nullable = false)
-        private Statuschamado Statusatual;
+        private StatusChamado Statusatual;
 }
