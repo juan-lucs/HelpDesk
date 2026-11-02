@@ -17,7 +17,7 @@ public class ComentarioController {
     private final ComentarioService service;
 
     @PostMapping
-    public void criarComentario(@RequestBody ComentariosChamado com, Chamado chamado, Usuario autor) {
+    public void criarComentario(@RequestBody ComentariosChamado com, @RequestBody Chamado chamado, Usuario autor) {
         service.criarComentario(com, chamado, autor);
     }
 }
