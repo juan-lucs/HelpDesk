@@ -33,7 +33,8 @@ public class ComentarioService {
         }
             com.setAutor(Autor);
             com.setDataComentario(LocalDateTime.now());
-            chamado.getComentarios().add(com);
-            repositoryChamado.save(chamado); // vai salvar o comentário também graças ao cascade
+            repositoryChamado.findById(chamado.getId()).ifPresent(c -> c.getComentarios().add(com));
+            // vai salvar sem o repository.save ao fechar a transação
+        // e o comentário também graças ao cascade
     }
 }
