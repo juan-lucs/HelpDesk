@@ -35,16 +35,15 @@ public class ChamadoRepositoryTest {
         c.setDescricao("TESTE DESCRICAO");
         c.setCategoria(CategoriaChamado.REDE);
         c.setPrioridade(PrioridadeChamado.ALTA);
-        c.setUsuarioCriador(usuario);
         // c.setStatus(); NAO PRECISA PORQUE O CHAMADO JÁ É CRIADO COM STATUS = ABERTO
-        service.criarChamado(c);
+        service.criarChamado(c, usuario);
 
         assertNotNull(c.getId());
         assertNotNull(c.getDataCriacao());
         assertEquals(StatusChamado.ABERTO, c.getStatus());
         assertTrue(repository.findById(c.getId()).isPresent());
 
-        repository.delete(c);
-        usuarioRepository.delete(usuario);
+//        repository.delete(c);
+//        usuarioRepository.delete(usuario); NÃO PRECISA GRAÇAS AO H2
     }
 }

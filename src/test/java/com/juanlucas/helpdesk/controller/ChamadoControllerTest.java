@@ -3,7 +3,9 @@ package com.juanlucas.helpdesk.controller;
 import com.juanlucas.helpdesk.Enum.CategoriaChamado;
 import com.juanlucas.helpdesk.Enum.PrioridadeChamado;
 import com.juanlucas.helpdesk.Enum.StatusChamado;
+import com.juanlucas.helpdesk.Exception.ChamadoNaoEncontradoException;
 import com.juanlucas.helpdesk.Model.Entity.Chamado;
+import com.juanlucas.helpdesk.Model.Entity.Tecnico;
 import com.juanlucas.helpdesk.Model.Entity.Usuario;
 import com.juanlucas.helpdesk.Service.ChamadoService;
 import com.juanlucas.helpdesk.repository.ChamadoRepository;
@@ -41,20 +43,16 @@ class ChamadoControllerTest {
         chamado.setCategoria(CategoriaChamado.SOFTWARE);
         chamado.setPrioridade(PrioridadeChamado.MEDIA);
         chamado.setStatus(StatusChamado.ABERTO);
-        chamado.setUsuarioCriador(usuario);
-        service.criarChamado(chamado);
+        service.criarChamado(chamado, usuario);
 
         var resposta = service.pegarPorId(chamado.getId());
 
-        assertTrue(resposta.isPresent());
-        assertEquals(chamado.getId(), resposta.orElseThrow().getId());
+        assertEquals(chamado.getId(), resposta.getId());
 
-        chamadoRepository.delete(chamado);
-        usuarioRepository.delete(usuario);
     }
 
     @Test
     void deveRetornarNaoEncontradoQuandoChamadoNaoExiste() {
-        assertTrue(service.pegarPorId(UUID.randomUUID()).isEmpty());
+        assertThrows(ChamadoNaoEncontradoException.class, () -> service.pegarPorId(UUID.randomUUID()));
     }
 }
