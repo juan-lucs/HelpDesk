@@ -4,6 +4,7 @@ import com.juanlucas.helpdesk.Enum.CategoriaChamado;
 import com.juanlucas.helpdesk.Enum.PrioridadeChamado;
 import com.juanlucas.helpdesk.Enum.StatusChamado;
 import jakarta.persistence.*;
+import jdk.jshell.Snippet;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -17,7 +18,6 @@ import java.util.UUID;
 @Table(name = "chamado")
 @Getter
 @Setter
-
 // Exclui as listas do toString() para evitaR
 // query extra (o toString força o carregamento das listas)
 @ToString(exclude = {"historico", "comentarios"})
@@ -49,8 +49,8 @@ public class Chamado {
     @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuarioCriador;
 
-    @ManyToOne
     @JoinColumn(name = "tecnico_id")
+    @ManyToOne
     private Tecnico tecnicoResponsavel;
 
 
@@ -62,9 +62,14 @@ public class Chamado {
     // Sem isso, o JPA criaria uma tabela com o id de chamado e historico
     // nullable = false: o histórico nunca existe sem um chamado, e o Hibernate
     // já inclui a FK no INSERT (evita o UPDATE extra).
-    @JoinColumn(name = "chamado_id", nullable = false)
+    @JoinColumn(name = "historico_id", nullable = false)
     // Inicializada para evitar NullPointerException em chamados novos.
     private List<Historico> historico = new ArrayList<>();
+
+    public void adicionarHistorico(Historico h) {
+        historico.add(h);
+        h.setChamado(this);
+    }
 
     // Mesma lógica do histórico: os comentários dependem do chamado,
     // então nascem, mudam e morrem junto com ele.
