@@ -1,6 +1,7 @@
 package com.juanlucas.helpdesk.Service;
 
 import com.juanlucas.helpdesk.Enum.CategoriaChamado;
+import com.juanlucas.helpdesk.Enum.EspecialidadeEnum;
 import com.juanlucas.helpdesk.Enum.PrioridadeChamado;
 import com.juanlucas.helpdesk.Enum.StatusChamado;
 import com.juanlucas.helpdesk.Exception.ChamadoFechadoouCanceladoException;
@@ -21,6 +22,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
+@Transactional
 class ChamadoServiceTest {
 
     @Autowired
@@ -43,7 +45,7 @@ class ChamadoServiceTest {
         Tecnico tecnico = new Tecnico();
         tecnico.setNome("Técnico teste");
         tecnico.setEmail("tecnico-" + UUID.randomUUID() + "@example.com");
-        tecnico.setEspecialidade(com.juanlucas.helpdesk.Enum.EspecialidadeEnum.values()[0]);
+        tecnico.setEspecialidade(EspecialidadeEnum.values()[0]);
         return usuarioRepository.save(tecnico);
     }
 
@@ -117,6 +119,7 @@ class ChamadoServiceTest {
 
         assertEquals(StatusChamado.CANCELADO,
                 chamadoRepository.findById(chamado.getId()).orElseThrow().getStatus());
+    }
 
     }
 }

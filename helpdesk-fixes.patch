@@ -1,0 +1,133 @@
+diff --git a/src/main/java/com/juanlucas/helpdesk/Model/Entity/Tecnico.java b/src/main/java/com/juanlucas/helpdesk/Model/Entity/Tecnico.java
+index 4b70c8b..46981fa 100644
+--- a/src/main/java/com/juanlucas/helpdesk/Model/Entity/Tecnico.java
++++ b/src/main/java/com/juanlucas/helpdesk/Model/Entity/Tecnico.java
+@@ -3,7 +3,7 @@ package com.juanlucas.helpdesk.Model.Entity;
+ import com.fasterxml.jackson.annotation.JsonIgnore;
+ import com.juanlucas.helpdesk.Enum.EspecialidadeEnum;
+ import jakarta.persistence.*;
+-import jakarta.validation.constraints.NotBlank;
++import jakarta.validation.constraints.NotNull;
+ import lombok.Getter;
+ import lombok.Setter;
+ import lombok.ToString;
+@@ -17,7 +17,7 @@ import java.util.UUID;
+ @Entity
+ // @Table(name = "tecnico")
+ public class Tecnico extends Usuario{
+-    @NotBlank(message = "A especialidade do Tecnico é obrigatória!")
++    @NotNull(message = "A especialidade do Tecnico é obrigatória!")
+     @Enumerated(EnumType.STRING)
+     @Column()
+     private EspecialidadeEnum especialidade;
+diff --git a/src/test/java/com/juanlucas/helpdesk/Service/ChamadoServiceTest.java b/src/test/java/com/juanlucas/helpdesk/Service/ChamadoServiceTest.java
+index e6c8144..1ddd5f8 100644
+--- a/src/test/java/com/juanlucas/helpdesk/Service/ChamadoServiceTest.java
++++ b/src/test/java/com/juanlucas/helpdesk/Service/ChamadoServiceTest.java
+@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
+ import org.springframework.beans.factory.annotation.Autowired;
+ import org.springframework.boot.test.context.SpringBootTest;
+ 
++import java.time.LocalDateTime;
+ import java.util.UUID;
+ 
+ import static org.junit.jupiter.api.Assertions.*;
+@@ -53,6 +54,7 @@ class ChamadoServiceTest {
+         chamado.setPrioridade(PrioridadeChamado.MEDIA);
+         chamado.setStatus(status);
+         chamado.setUsuarioCriador(usuario);
++        chamado.setDataCriacao(LocalDateTime.now());
+         return chamadoRepository.save(chamado);
+     }
+ 
+diff --git a/src/test/java/com/juanlucas/helpdesk/repository/ChamadoRepositoryTest.java b/src/test/java/com/juanlucas/helpdesk/repository/ChamadoRepositoryTest.java
+index eb08ec5..e4bf94a 100644
+--- a/src/test/java/com/juanlucas/helpdesk/repository/ChamadoRepositoryTest.java
++++ b/src/test/java/com/juanlucas/helpdesk/repository/ChamadoRepositoryTest.java
+@@ -10,6 +10,10 @@ import org.junit.jupiter.api.Test;
+ import org.springframework.beans.factory.annotation.Autowired;
+ import org.springframework.boot.test.context.SpringBootTest;
+ 
++import java.util.UUID;
++
++import static org.junit.jupiter.api.Assertions.*;
++
+ @SpringBootTest
+ public class ChamadoRepositoryTest {
+     @Autowired
+@@ -23,16 +27,24 @@ public class ChamadoRepositoryTest {
+     public void criarChamado() {
+         var usuario = new Usuario();
+         usuario.setNome("Usuário de teste");
+-        usuario.setEmail("usuario.chamado@teste.com");
++        usuario.setEmail("usuario.chamado-" + UUID.randomUUID() + "@teste.com");
+         usuario = usuarioRepository.save(usuario);
+ 
+         var c = new Chamado();
+         c.setTitulo("TESTE TITULO");
+         c.setDescricao("TESTE DESCRICAO");
+-        c.setCategoria(CategoriaChamado.valueOf("REDES"));
+-        c.setPrioridade(PrioridadeChamado.valueOf("ALTA"));
+-        c.setUsuario(usuario);
++        c.setCategoria(CategoriaChamado.REDE);
++        c.setPrioridade(PrioridadeChamado.ALTA);
++        c.setUsuarioCriador(usuario);
+         // c.setStatus(); NAO PRECISA PORQUE O CHAMADO JÁ É CRIADO COM STATUS = ABERTO
+         service.criarChamado(c);
++
++        assertNotNull(c.getId());
++        assertNotNull(c.getDataCriacao());
++        assertEquals(Statuschamado.ABERTO, c.getStatus());
++        assertTrue(repository.findById(c.getId()).isPresent());
++
++        repository.delete(c);
++        usuarioRepository.delete(usuario);
+     }
+-}
+\ No newline at end of file
++}
+diff --git a/src/test/java/com/juanlucas/helpdesk/repository/UsuarioRepositoryTest.java b/src/test/java/com/juanlucas/helpdesk/repository/UsuarioRepositoryTest.java
+index 540293c..89b5eb2 100644
+--- a/src/test/java/com/juanlucas/helpdesk/repository/UsuarioRepositoryTest.java
++++ b/src/test/java/com/juanlucas/helpdesk/repository/UsuarioRepositoryTest.java
+@@ -8,6 +8,8 @@ import org.junit.jupiter.api.Test;
+ import org.springframework.beans.factory.annotation.Autowired;
+ import org.springframework.boot.test.context.SpringBootTest;
+ 
++import java.util.UUID;
++
+ import static org.junit.jupiter.api.Assertions.assertThrows;
+ 
+ @SpringBootTest
+@@ -31,12 +33,24 @@ public class UsuarioRepositoryTest {
+     }
+     @Test
+     public void salvarMesmoEmail() {
+-        var u = new Usuario();
+-        u.setNome("teste");
+-        u.setEmail("teste@gmail.com");
+-        assertThrows(
+-                EmailJaCadastradoException.class,
+-                () -> service.salvarUsuario(u)
+-        );
++        String email = "teste-" + UUID.randomUUID() + "@gmail.com";
++
++        var existente = new Usuario();
++        existente.setNome("existente");
++        existente.setEmail(email);
++        var salvo = service.salvarUsuario(existente);
++
++        var repetido = new Usuario();
++        repetido.setNome("teste");
++        repetido.setEmail(email);
++
++        try {
++            assertThrows(
++                    EmailJaCadastradoException.class,
++                    () -> service.salvarUsuario(repetido)
++            );
++        } finally {
++            repository.delete(salvo);
++        }
+     }
+ }

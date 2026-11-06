@@ -8,12 +8,14 @@ import com.juanlucas.helpdesk.repository.UsuarioRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
+@Transactional
 class UsuarioServiceTest {
 
     @Autowired
@@ -22,65 +24,74 @@ class UsuarioServiceTest {
     @Autowired
     private UsuarioRepository repository;
 
+    private String emailUnico(String prefixo) {
+        return prefixo + "-" + UUID.randomUUID() + "@example.com";
+    }
+
     @Test
-    void deveSalvarUsuarioComEmailNovo() throws Exception {
+    void deveSalvarUsuarioComEmailNovo() {
         Usuario usuario = new Usuario();
         usuario.setNome("Usuário de teste");
-        usuario.setEmail("usuario-" + UUID.randomUUID() + "@example.com");
+        usuario.setEmail(emailUnico("usuario"));
 
         Usuario salvo = service.salvarUsuario(usuario);
 
         assertNotNull(salvo.getId());
         assertEquals(usuario.getEmail(), salvo.getEmail());
-        repository.delete(salvo);
+        assertTrue(repository.findById(salvo.getId()).isPresent());
     }
 
     @Test
-    void deveImpedirUsuarioComEmailDuplicado() throws Exception {
-        Usuario usuario = new Usuario();
-        usuario.setNome("Usuário de teste");
-        usuario.setEmail("duplicado-" + UUID.randomUUID() + "@example.com");
-        Usuario salvo = service.salvarUsuario(usuario);
+    void deveImpedirUsuarioComEmailDuplicado() {
+        Usuario existente = new Usuario();
+        existente.setNome("Usuário existente");
+        existente.setEmail(emailUnico("duplicado"));
+        service.salvarUsuario(existente);
 
         Usuario repetido = new Usuario();
         repetido.setNome("Outro usuário");
-        repetido.setEmail(salvo.getEmail());
+        repetido.setEmail(existente.getEmail());
 
-        assertThrows(EmailJaCadastradoException.class, () -> service.salvarUsuario(repetido));
-        repository.delete(salvo);
+        assertThrows(EmailJaCadastradoException.class,
+                () -> service.salvarUsuario(repetido));
     }
 
     @Test
-    void deveSalvarTecnicoComEspecialidade() throws Exception {
+    void deveSalvarTecnicoComEspecialidade() {
         Tecnico tecnico = new Tecnico();
         tecnico.setNome("Técnico de teste");
-        tecnico.setEmail("tecnico-" + UUID.randomUUID() + "@example.com");
+        tecnico.setEmail(emailUnico("tecnico"));
         tecnico.setEspecialidade(EspecialidadeEnum.values()[0]);
 
         Tecnico salvo = service.salvarTecnico(tecnico);
 
         assertNotNull(salvo.getId());
         assertEquals(tecnico.getEmail(), salvo.getEmail());
-        repository.delete(salvo);
+        assertEquals(tecnico.getEspecialidade(), salvo.getEspecialidade());
     }
 
     @Test
     void deveImpedirTecnicoSemEspecialidade() {
         Tecnico tecnico = new Tecnico();
         tecnico.setNome("Técnico de teste");
-        tecnico.setEmail("tecnico-sem-especialidade-" + UUID.randomUUID() + "@example.com");
+        tecnico.setEmail(emailUnico("tecnico-sem-especialidade"));
 
-        assertThrows(IllegalArgumentException.class, () -> service.salvarTecnico(tecnico));
+        assertThrows(IllegalArgumentException.class,
+                () -> service.salvarTecnico(tecnico));
     }
 
     @Test
-    void deveBuscarUsuarioPorId() throws Exception {
+    void deveBuscarUsuarioPorId() {
         Usuario usuario = new Usuario();
-        usuario.setNome("Busca");
-        usuario.setEmail("busca-" + UUID.randomUUID() + "@example.com");
+        usuario.setNome("Usuário para busca");
+        usuario.setEmail(emailUnico("busca"));
         Usuario salvo = service.salvarUsuario(usuario);
 
-        assertTrue(service.pegarPorId(salvo.getId()).isPresent());
-        repository.delete(salvo);
+        assertEquals(salvo.getId(), service.pegarPorId(salvo.getId()).orElseThrow().getId());
+    }
+
+    @Test
+    void deveRetornarVazioQuandoUsuarioNaoExiste() {
+        assertTrue(service.pegarPorId(UUID.randomUUID()).isEmpty());
     }
 }

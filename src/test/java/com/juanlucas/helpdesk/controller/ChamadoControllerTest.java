@@ -19,8 +19,10 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
+@Transactional
 class ChamadoControllerTest {
 
+    // Estes testes exercitam o serviço diretamente; não validam requisições HTTP.
     @Autowired
     private ChamadoService service;
 
@@ -35,7 +37,7 @@ class ChamadoControllerTest {
         var usuario = new Usuario();
         usuario.setNome("Usuário controller");
         usuario.setEmail("controller-" + UUID.randomUUID() + "@example.com");
-        usuario = usuarioRepository.save(usuario);
+        usuarioRepository.save(usuario);
 
         var chamado = new Chamado();
         chamado.setTitulo("Chamado controller");

@@ -9,23 +9,32 @@ import com.juanlucas.helpdesk.Service.ChamadoService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-public class ChamadoRepositoryTest {
+@Transactional
+class ChamadoRepositoryTest {
+
     @Autowired
-    ChamadoRepository repository;
+    private ChamadoRepository repository;
+
     @Autowired
-    ChamadoService service;
+    private ChamadoService service;
+
     @Autowired
-    UsuarioRepository usuarioRepository;
+    private UsuarioRepository usuarioRepository;
 
     @Test
-    public void criarChamado() {
-        var usuario = new Usuario();
+    void deveCriarChamadoComStatusInicialEDataDeCriacao() {
+        Usuario usuario = new Usuario();
         usuario.setNome("Usuário de teste");
         usuario.setEmail("usuario.chamado-" + UUID.randomUUID() + "@teste.com");
         usuario = usuarioRepository.save(usuario);
