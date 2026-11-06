@@ -1,7 +1,8 @@
 package com.juanlucas.helpdesk.controller;
 
-import com.juanlucas.helpdesk.Enum.Statuschamado;
+import com.juanlucas.helpdesk.Enum.StatusChamado;
 import com.juanlucas.helpdesk.Model.Entity.Chamado;
+import com.juanlucas.helpdesk.Model.Entity.Usuario;
 import com.juanlucas.helpdesk.Service.ChamadoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,15 +19,13 @@ public class ChamadoController {
 
 
     @PostMapping("/chamado")
-    public void criarChamado(@RequestBody Chamado c) {
-        service.criarChamado(c);
+    public void criarChamado(@RequestBody Chamado c, Usuario u) {
+        service.criarChamado(c, u);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Chamado> pegarPorId(@PathVariable String id) {
-        return service.pegarPorId(UUID.fromString(id))
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    public Chamado pegarPorId(@PathVariable String id) {
+        return service.pegarPorId(UUID.fromString(id));
     }
 
     @GetMapping
@@ -40,7 +39,7 @@ public class ChamadoController {
     }
 
     @PatchMapping("/alterarStatus/{id}")
-    public void alterarStatus(@PathVariable("id") String idChamado, String statusNovo) {
-        service.alterarStatus(idChamado, Statuschamado.valueOf(statusNovo));
+    public void alterarStatus(@PathVariable("id") String idChamado, String statusNovo, String idAutorDaAlteracao) {
+        service.alterarStatus(idChamado, StatusChamado.valueOf(statusNovo),idAutorDaAlteracao);
     }
 }

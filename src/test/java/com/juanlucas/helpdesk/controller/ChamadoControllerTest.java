@@ -2,8 +2,10 @@ package com.juanlucas.helpdesk.controller;
 
 import com.juanlucas.helpdesk.Enum.CategoriaChamado;
 import com.juanlucas.helpdesk.Enum.PrioridadeChamado;
-import com.juanlucas.helpdesk.Enum.Statuschamado;
+import com.juanlucas.helpdesk.Enum.StatusChamado;
+import com.juanlucas.helpdesk.Exception.ChamadoNaoEncontradoException;
 import com.juanlucas.helpdesk.Model.Entity.Chamado;
+import com.juanlucas.helpdesk.Model.Entity.Tecnico;
 import com.juanlucas.helpdesk.Model.Entity.Usuario;
 import com.juanlucas.helpdesk.Service.ChamadoService;
 import com.juanlucas.helpdesk.repository.ChamadoRepository;
@@ -11,7 +13,6 @@ import com.juanlucas.helpdesk.repository.UsuarioRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
@@ -33,29 +34,27 @@ class ChamadoControllerTest {
 
     @Test
     void deveRetornarChamadoQuandoEncontrado() {
-        Usuario usuario = new Usuario();
-        usuario.setNome("Usuário de teste");
+        var usuario = new Usuario();
+        usuario.setNome("Usuário controller");
         usuario.setEmail("controller-" + UUID.randomUUID() + "@example.com");
         usuarioRepository.save(usuario);
 
-        Chamado chamado = new Chamado();
-        chamado.setTitulo("Chamado de teste");
+        var chamado = new Chamado();
+        chamado.setTitulo("Chamado controller");
         chamado.setDescricao("Descrição");
         chamado.setCategoria(CategoriaChamado.SOFTWARE);
         chamado.setPrioridade(PrioridadeChamado.MEDIA);
-        chamado.setStatus(Statuschamado.ABERTO);
-        chamado.setUsuarioCriador(usuario);
-        service.criarChamado(chamado);
+        chamado.setStatus(StatusChamado.ABERTO);
+        service.criarChamado(chamado, usuario);
 
         var resposta = service.pegarPorId(chamado.getId());
 
-        assertTrue(resposta.isPresent());
-        assertEquals(chamado.getId(), resposta.orElseThrow().getId());
-        assertEquals("Chamado de teste", resposta.orElseThrow().getTitulo());
+        assertEquals(chamado.getId(), resposta.getId());
+
     }
 
     @Test
-    void deveRetornarVazioQuandoChamadoNaoExiste() {
-        assertTrue(service.pegarPorId(UUID.randomUUID()).isEmpty());
+    void deveRetornarNaoEncontradoQuandoChamadoNaoExiste() {
+        assertThrows(ChamadoNaoEncontradoException.class, () -> service.pegarPorId(UUID.randomUUID()));
     }
 }

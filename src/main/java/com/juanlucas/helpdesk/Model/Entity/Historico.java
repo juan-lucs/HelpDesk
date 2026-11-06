@@ -1,11 +1,12 @@
 package com.juanlucas.helpdesk.Model.Entity;
 
-import com.juanlucas.helpdesk.Enum.Statuschamado;
+import com.juanlucas.helpdesk.Enum.StatusChamado;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.UUID;
 
@@ -19,7 +20,7 @@ public class Historico {
         @GeneratedValue
         private UUID id;
         @Column( nullable = false)
-        private LocalTime horaDaAlteracao;
+        private LocalDateTime horaDaAlteracao;
 
         @ManyToOne
         private Usuario Autor;
@@ -29,5 +30,9 @@ public class Historico {
 
         @Enumerated(EnumType.STRING)
         @Column(nullable = false)
-        private Statuschamado Statusatual;
+        private StatusChamado Statusatual;
+
+        @ManyToOne(optional = false)
+        @JoinColumn(name = "chamado_id")
+        private Chamado chamado;
 }

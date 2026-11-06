@@ -7,27 +7,25 @@ import static org.junit.jupiter.api.Assertions.*;
 class StatuschamadoTest {
 
     @Test
-    void devePermitirTransicoesImplementadasNoEnum() {
-        assertTrue(Statuschamado.ABERTO.alteracao(Statuschamado.CANCELADO));
-        assertTrue(Statuschamado.ABERTO.alteracao(Statuschamado.EM_ATENDIMENTO));
-        assertTrue(Statuschamado.ABERTO.alteracao(Statuschamado.AGUARDANDO_USUARIO));
-
-        assertTrue(Statuschamado.EM_ATENDIMENTO.alteracao(Statuschamado.AGUARDANDO_USUARIO));
-        assertTrue(Statuschamado.EM_ATENDIMENTO.alteracao(Statuschamado.CANCELADO));
-
-        assertTrue(Statuschamado.AGUARDANDO_USUARIO.alteracao(Statuschamado.EM_ATENDIMENTO));
-        assertTrue(Statuschamado.AGUARDANDO_USUARIO.alteracao(Statuschamado.CANCELADO));
-
-        // Comportamento atualmente definido no enum.
-        assertTrue(Statuschamado.FECHADO.alteracao(Statuschamado.EM_ATENDIMENTO));
+    void devePermitirTransicoesValidas() {
+        assertTrue(StatusChamado.ABERTO.alteracao(StatusChamado.CANCELADO));
+        assertTrue(StatusChamado.ABERTO.alteracao(StatusChamado.EM_ATENDIMENTO));
+        assertTrue(StatusChamado.ABERTO.alteracao(StatusChamado.AGUARDANDO_USUARIO));
+        assertTrue(StatusChamado.EM_ATENDIMENTO.alteracao(StatusChamado.CANCELADO ));
+        assertTrue(StatusChamado.EM_ATENDIMENTO.alteracao(StatusChamado.AGUARDANDO_USUARIO));
+        assertTrue(StatusChamado.AGUARDANDO_USUARIO.alteracao(StatusChamado.EM_ATENDIMENTO));
+        assertTrue(StatusChamado.AGUARDANDO_USUARIO.alteracao(StatusChamado.CANCELADO));
+        assertTrue(StatusChamado.FECHADO.alteracao(StatusChamado.EM_ATENDIMENTO));
     }
 
     @Test
-    void deveBloquearTransicoesNaoImplementadasNoEnum() {
-        assertFalse(Statuschamado.CANCELADO.alteracao(Statuschamado.EM_ATENDIMENTO));
-        assertFalse(Statuschamado.CANCELADO.alteracao(Statuschamado.ABERTO));
-        assertFalse(Statuschamado.ABERTO.alteracao(Statuschamado.FECHADO));
-        assertFalse(Statuschamado.EM_ATENDIMENTO.alteracao(Statuschamado.ABERTO));
-        assertFalse(Statuschamado.AGUARDANDO_USUARIO.alteracao(Statuschamado.ABERTO));
+    void deveBloquearTransicoesInvalidas() {
+        assertFalse(StatusChamado.FECHADO.alteracao(StatusChamado.ABERTO));
+        assertFalse(StatusChamado.CANCELADO.alteracao(StatusChamado.EM_ATENDIMENTO));
+        assertFalse(StatusChamado.CANCELADO.alteracao(StatusChamado.ABERTO));
+        assertFalse(StatusChamado.CANCELADO.alteracao(StatusChamado.CANCELADO));
+        assertFalse(StatusChamado.CANCELADO.alteracao(StatusChamado.FECHADO));
+        assertFalse(StatusChamado.ABERTO.alteracao(StatusChamado.FECHADO));
+        assertFalse(StatusChamado.EM_ATENDIMENTO.alteracao(StatusChamado.FECHADO));
     }
 }

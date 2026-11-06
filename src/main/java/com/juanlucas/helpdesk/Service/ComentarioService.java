@@ -1,6 +1,6 @@
 package com.juanlucas.helpdesk.Service;
 
-import com.juanlucas.helpdesk.Enum.Statuschamado;
+import com.juanlucas.helpdesk.Enum.StatusChamado;
 import com.juanlucas.helpdesk.Exception.ChamadoFechadoouCanceladoException;
 import com.juanlucas.helpdesk.Exception.ChamadoNaoEncontradoException;
 import com.juanlucas.helpdesk.Exception.UsuarioNaoEncontradoException;
@@ -8,9 +8,8 @@ import com.juanlucas.helpdesk.Model.Entity.Chamado;
 import com.juanlucas.helpdesk.Model.Entity.ComentariosChamado;
 import com.juanlucas.helpdesk.Model.Entity.Usuario;
 import com.juanlucas.helpdesk.repository.ChamadoRepository;
-import com.juanlucas.helpdesk.repository.ComentariosChamadoRepository;
+import org.springframework.transaction.annotation.Transactional;
 import com.juanlucas.helpdesk.repository.UsuarioRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,22 +23,18 @@ public class ComentarioService {
     private final UsuarioRepository repositoryUsuario;
 
     @Transactional
-    public void criarComentario(ComentariosChamado com, Chamado chamado, Usuario autor) {
-        Chamado chamadoBanco = repositoryChamado.findById(chamado.getId())
-                .orElseThrow(() ->
-                        new ChamadoNaoEncontradoException("Chamado não existe!"));
-
-        if (chamadoBanco.getStatus() == Statuschamado.FECHADO || chamadoBanco.getStatus() == Statuschamado.CANCELADO ) {
-            throw new ChamadoFechadoouCanceladoException("Um chamado " + chamadoBanco.getStatus() + " não pode receber comentários!");
+    public void criarComentario(ComentariosChamado com, Chamado chamado, Usuario Autor) {
+        if ( !(repositoryChamado.existsById(chamado.getId())) ) {
+            throw new ChamadoNaoEncontradoException("Chamado não existe!");
+        } else if ( (repositoryChamado.verificarStatusChamado(chamado.getId()) == StatusChamado.FECHADO) || repositoryChamado.verificarStatusChamado(chamado.getId()) == StatusChamado.CANCELADO ) {
+            throw new ChamadoFechadoouCanceladoException("Um chamado " + chamado.getStatus() + " não pode receber comentários!");
+        } else if ( !(repositoryUsuario.existsById(Autor.getId())) ) {
+            throw new UsuarioNaoEncontradoException("Usuario não encontrado!");
         }
-
-        Usuario autorBanco = repositoryUsuario.findById(autor.getId())
-                .orElseThrow(() ->
-                        new UsuarioNaoEncontradoException("Usuário não encontrado!"));
-
-        com.setAutor(autor);
-        com.setDataComentario(LocalDateTime.now());
-        chamadoBanco.getComentarios().add(com);
-        repositoryChamado.save(chamadoBanco);
+            com.setAutor(Autor);
+            com.setDataComentario(LocalDateTime.now());
+            repositoryChamado.findById(chamado.getId()).ifPresent(c -> c.getComentarios().add(com));
+            // vai salvar sem o repository.save ao fechar a transação
+        // e o comentário também graças ao cascade
     }
 }

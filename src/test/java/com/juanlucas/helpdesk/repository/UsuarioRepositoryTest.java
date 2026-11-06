@@ -11,6 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
+import java.util.UUID;
+
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
@@ -33,18 +35,25 @@ class UsuarioRepositoryTest {
     }
 
     @Test
-    void deveRejeitarEmailDuplicado() {
-        String email = "teste-" + UUID.randomUUID() + "@example.com";
+    public void salvarMesmoEmail() {
+        String email = "teste-" + UUID.randomUUID() + "@gmail.com";
 
-        Usuario existente = new Usuario();
-        existente.setNome("Usuário existente");
+        var existente = new Usuario();
+        existente.setNome("existente");
         existente.setEmail(email);
-        service.salvarUsuario(existente);
+        var salvo = service.salvarUsuario(existente);
 
-        Usuario repetido = new Usuario();
-        repetido.setNome("Outro usuário");
+        var repetido = new Usuario();
+        repetido.setNome("teste");
         repetido.setEmail(email);
 
-        assertThrows(EmailJaCadastradoException.class, () -> service.salvarUsuario(repetido));
+        try {
+            assertThrows(
+                    EmailJaCadastradoException.class,
+                    () -> service.salvarUsuario(repetido)
+            );
+        } finally {
+            repository.delete(salvo);
+        }
     }
 }
