@@ -14,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 public class ComentarioService {
@@ -23,13 +25,11 @@ public class ComentarioService {
     private final UsuarioRepository repositoryUsuario;
 
     @Transactional
-    public void criarComentario(ComentariosChamado com, Chamado chamado, Usuario Autor) {
-        if ( !(repositoryChamado.existsById(chamado.getId())) ) {
-            throw new ChamadoNaoEncontradoException("Chamado não existe!");
-        } else if ( (repositoryChamado.verificarStatusChamado(chamado.getId()) == StatusChamado.FECHADO) || repositoryChamado.verificarStatusChamado(chamado.getId()) == StatusChamado.CANCELADO ) {
+    public void criarComentario(ComentariosChamado com, String idChamado, String idAutor) throws ChamadoNaoEncontradoException{
+        var chamado = repositoryChamado.findById(UUID.fromString(idChamado)).orElseThrow(() -> new ChamadoNaoEncontradoException("Chamado não existe!"));
+        var Autor = repositoryUsuario.findById(UUID.fromString(idAutor)).orElseThrow( () -> new UsuarioNaoEncontradoException("Usuario não encontrado!"));
+        if ( (repositoryChamado.verificarStatusChamado(chamado.getId()) == StatusChamado.FECHADO) || repositoryChamado.verificarStatusChamado(chamado.getId()) == StatusChamado.CANCELADO ) {
             throw new ChamadoFechadoouCanceladoException("Um chamado " + chamado.getStatus() + " não pode receber comentários!");
-        } else if ( !(repositoryUsuario.existsById(Autor.getId())) ) {
-            throw new UsuarioNaoEncontradoException("Usuario não encontrado!");
         }
             com.setAutor(Autor);
             com.setDataComentario(LocalDateTime.now());

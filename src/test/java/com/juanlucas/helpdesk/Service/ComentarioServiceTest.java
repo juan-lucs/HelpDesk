@@ -61,7 +61,7 @@ class ComentarioServiceTest {
         var comentario = new ComentariosChamado();
         comentario.setConteudo("Teste Conteudo");
 
-        service.criarComentario(comentario, chamado, usuario);
+        service.criarComentario(comentario, chamado.getId().toString(), usuario.getId().toString());
 
 //        Chamado chamadoAtualizado = repositoryChamado.findById(chamado.getId()).orElseThrow();
         ComentariosChamado comentarioSalvo = chamado.getComentarios().stream()
@@ -86,7 +86,7 @@ class ComentarioServiceTest {
         var comentario = new ComentariosChamado();
         comentario.setConteudo("Teste Conteudo");
 
-        assertThrows(ChamadoFechadoouCanceladoException.class, () -> service.criarComentario(comentario, chamado, usuario));
+        assertThrows(ChamadoFechadoouCanceladoException.class, () -> service.criarComentario(comentario, chamado.getId().toString(), usuario.getId().toString()));
 
         repositoryChamado.delete(chamado);
         usuarioRepository.delete(usuario);
