@@ -24,8 +24,7 @@ public class HistoricoService {
     private final UsuarioRepository repositoryUsuario;
 
     // Método base: cria um registro de histórico e vincula ao chamado
-    // Segue o mesmo padrão do ComentarioService: adiciona na lista do chamado e faz save no chamado
-    // (porque o Historico não tem @ManyToOne para Chamado, o dono da relação é Chamado.historico com @JoinColumn)
+    // O campo Historico.chamadoDono é o lado que grava a chave estrangeira.
     @Transactional
     public Historico registrarHistorico(Chamado chamado, Usuario autor, String descricao) {
 
@@ -48,9 +47,7 @@ public class HistoricoService {
         historico.setHoraDaAlteracao(LocalDateTime.now());
         historico.setStatusatual(chamadoGerenciado.getStatus());
         chamadoGerenciado.getHistorico().add(historico);
-        historico.setChamado(chamado);
 //        repositoryChamado.save(chamadoGerenciado); Não precisa do .save, porque o Transacional já salva no commit
-
         return historico;
     }
 
@@ -64,18 +61,18 @@ public class HistoricoService {
 
     // Regra de negócio: Toda atribuição de técnico deve ser registrada no histórico
     @Transactional
-    public Historico registrarAtribuicaoTecnico(Chamado chamado) {
+    public void registrarAtribuicaoTecnico(Chamado chamado) {
         // autor aqui é quem atribuiu (técnico)
         String descricao = "Chamado atribuído ao técnico " + chamado.getTecnicoResponsavel().getNome();
-        return registrarHistorico(chamado, chamado.getTecnicoResponsavel(), descricao);
+        registrarHistorico(chamado, chamado.getTecnicoResponsavel(), descricao);
     }
 
     // Regra de negócio: Toda alteração de status deve ser registrada no histórico
     // Ex: "11:15 — Status alterado para EM_ATENDIMENTO"
     @Transactional
-    public Historico registrarAlteracaoStatus(Chamado chamado, Usuario autor, StatusChamado statusAnterior, StatusChamado statusNovo) {
+    public void registrarAlteracaoStatus(Chamado chamado, Usuario autor, StatusChamado statusAnterior, StatusChamado statusNovo) {
         String descricao = "Status alterado de " + statusAnterior + " para " + statusNovo + " por: " + autor.getNome();
-        return registrarHistorico(chamado, autor, descricao);
+        registrarHistorico(chamado, autor, descricao);
     }
 
     // Regra de negócio: Comentários também geram entrada no histórico (opcional, mas exigido na spec)

@@ -32,7 +32,9 @@ public class Historico {
         @Column(nullable = false)
         private StatusChamado Statusatual;
 
-        @ManyToOne(optional = false)
-        @JoinColumn(name = "chamado_id")
-        private Chamado chamado;
+//        @ManyToOne(optional = false)
+//        // nullable = false: o histórico nunca existe sem um chamado, e o Hibernate
+//        // já inclui a FK no INSERT (evita o UPDATE extra).
+//        @JoinColumn(name = "chamado_id", nullable = false)
+//        private Chamado chamadoDono;
 }

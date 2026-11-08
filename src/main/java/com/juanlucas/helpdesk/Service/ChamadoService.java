@@ -66,7 +66,7 @@ public class ChamadoService {
         chamado.setTecnicoResponsavel(tecnico);
         chamado.setStatus(StatusChamado.EM_ATENDIMENTO);
         repositoryChamado.save(chamado);
-        chamado.getHistorico().add(serviceHistorico.registrarAtribuicaoTecnico(chamado)); // adiciona Historico ao ArrayList de Historicos, do Chamado
+        serviceHistorico.registrarAtribuicaoTecnico(chamado); // registra a atribuicao em historico deste chamado
     }
 
     @Transactional

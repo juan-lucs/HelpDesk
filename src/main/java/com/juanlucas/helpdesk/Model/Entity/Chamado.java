@@ -57,19 +57,13 @@ public class Chamado {
     // UM chamado tem MUITOS históricos.
     // cascade = ALL: salvar/atualizar/deletar o chamado faz o mesmo nos históricos.
     // orphanRemoval = true: remover um histórico da lista também o apaga do banco.
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    // Cria a coluna "chamado_id" na tabela de HISTORICO (ESTRAngeira para este chamado).
-    // Sem isso, o JPA criaria uma tabela com o id de chamado e historico
-    // nullable = false: o histórico nunca existe sem um chamado, e o Hibernate
-    // já inclui a FK no INSERT (evita o UPDATE extra).
-    @JoinColumn(name = "historico_id", nullable = false)
+    // Em Chamado
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "chamado_id", nullable = false)
+    // A coluna da relação é definida pelo campo chamadoDono em Historico.
     // Inicializada para evitar NullPointerException em chamados novos.
     private List<Historico> historico = new ArrayList<>();
 
-    public void adicionarHistorico(Historico h) {
-        historico.add(h);
-        h.setChamado(this);
-    }
 
     // Mesma lógica do histórico: os comentários dependem do chamado,
     // então nascem, mudam e morrem junto com ele.
