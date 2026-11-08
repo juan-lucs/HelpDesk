@@ -33,12 +33,12 @@ class UsuarioServiceTest {
         Usuario usuario = new Usuario();
         usuario.setNome("Usuário de teste");
         usuario.setEmail(emailUnico("usuario"));
+        var test = usuario.getEmail();
+        service.salvarUsuario(usuario);
 
-        Usuario salvo = service.salvarUsuario(usuario);
-
-        assertNotNull(salvo.getId());
-        assertEquals(usuario.getEmail(), salvo.getEmail());
-        assertTrue(repository.findById(salvo.getId()).isPresent());
+        assertNotNull(usuario.getId());
+        assertEquals(test, usuario.getEmail());
+        assertTrue(repository.findById(usuario.getId()).isPresent());
     }
 
     @Test
@@ -85,9 +85,9 @@ class UsuarioServiceTest {
         Usuario usuario = new Usuario();
         usuario.setNome("Usuário para busca");
         usuario.setEmail(emailUnico("busca"));
-        Usuario salvo = service.salvarUsuario(usuario);
+        service.salvarUsuario(usuario);
 
-        assertEquals(salvo.getId(), service.pegarPorId(salvo.getId()).orElseThrow().getId());
+        assertEquals(usuario.getId(), service.pegarPorId(usuario.getId()).orElseThrow().getId());
     }
 
     @Test

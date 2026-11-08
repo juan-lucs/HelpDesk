@@ -41,7 +41,7 @@ class UsuarioRepositoryTest {
         var existente = new Usuario();
         existente.setNome("existente");
         existente.setEmail(email);
-        var salvo = service.salvarUsuario(existente);
+        service.salvarUsuario(existente);
 
         var repetido = new Usuario();
         repetido.setNome("teste");
@@ -53,7 +53,7 @@ class UsuarioRepositoryTest {
                     () -> service.salvarUsuario(repetido)
             );
         } finally {
-            repository.delete(salvo);
+            repository.delete(existente);
         }
     }
 }

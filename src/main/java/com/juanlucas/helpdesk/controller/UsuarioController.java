@@ -3,10 +3,13 @@ package com.juanlucas.helpdesk.controller;
 import com.juanlucas.helpdesk.Model.Entity.Tecnico;
 import com.juanlucas.helpdesk.Model.Entity.Usuario;
 import com.juanlucas.helpdesk.Service.UsuarioService;
+import com.juanlucas.helpdesk.controller.DTO.UsuarioDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,8 +20,14 @@ public class UsuarioController {
     private final UsuarioService service;
 
     @PostMapping
-    public Usuario salvarUsuario(@RequestBody Usuario usuario) {
-        return service.salvarUsuario(usuario);
+    public ResponseEntity<Object> salvarUsuario(@RequestBody UsuarioDTO usuario){
+        var usuarioEntidade = usuario.mapearparaUsuario();
+        service.salvarUsuario(usuarioEntidade);
+
+        // http://localhost:8080/usuarios/ID DO USUARIO QUE FOI CRIADO PELO BANCOOO
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(usuarioEntidade.getId()).toUri();
+
+        return ResponseEntity.created(location).build(); // Uma resposta boa, dizendo que usuario foi criado
     }
 
     @PostMapping("/tecnico")

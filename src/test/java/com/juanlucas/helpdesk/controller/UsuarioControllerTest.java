@@ -25,10 +25,10 @@ class UsuarioControllerTest {
         usuario.setNome("Usuário de teste");
         usuario.setEmail("controller-" + UUID.randomUUID() + "@example.com");
 
-        Usuario salvo = service.salvarUsuario(usuario);
+        service.salvarUsuario(usuario);
 
-        assertNotNull(salvo.getId());
-        assertEquals(salvo.getId(), service.pegarPorId(salvo.getId()).orElseThrow().getId());
+        assertNotNull(usuario.getId());
+        assertEquals(usuario.getId(), service.pegarPorId(usuario.getId()).orElseThrow().getId());
     }
 
     @Test

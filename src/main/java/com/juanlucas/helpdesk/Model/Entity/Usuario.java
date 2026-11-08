@@ -28,6 +28,7 @@ public class Usuario {
 
     @Column(unique = true, nullable = false, length = 150)
     private String email;
+
     @JsonIgnore // TODO: migrar para DTO
     @OneToMany( fetch = FetchType.LAZY, mappedBy = "usuarioCriador")
     private List<Chamado> chamados = new ArrayList<>();

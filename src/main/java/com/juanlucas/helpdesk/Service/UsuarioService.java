@@ -6,7 +6,6 @@ import com.juanlucas.helpdesk.Model.Entity.Usuario;
 import com.juanlucas.helpdesk.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -17,10 +16,9 @@ public class UsuarioService {
 
     private final UsuarioRepository repository;
 
-    public Usuario salvarUsuario(Usuario usuario) throws EmailJaCadastradoException {
+    public void salvarUsuario(Usuario usuario) throws EmailJaCadastradoException {
         verificarEmail(usuario.getEmail());
-
-        return repository.save(usuario);
+        repository.save(usuario);
     }
 
     public Tecnico salvarTecnico(Tecnico tecnico) throws EmailJaCadastradoException {
