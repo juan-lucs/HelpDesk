@@ -42,12 +42,14 @@ public class ChamadoController {
     }
 
     @PatchMapping("/atribuirtecnicochamado")
-    public void atribuirTecnico(@RequestParam String idChamado, String idTecnico) {
+    public ResponseEntity<Void> atribuirTecnico(@RequestParam String idChamado, String idTecnico) {
         service.atribuirTecnico(idChamado, idTecnico);
+        return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/alterarStatus/{id}")
-    public void alterarStatus(@PathVariable("id") String idChamado, String statusNovo, String idAutorDaAlteracao) {
+    public ResponseEntity<Void> alterarStatus(@PathVariable("id") String idChamado, String statusNovo, String idAutorDaAlteracao) {
         service.alterarStatus(idChamado, StatusChamado.valueOf(statusNovo),idAutorDaAlteracao);
+        return ResponseEntity.noContent().build();
     }
 }
