@@ -43,10 +43,10 @@ public class HistoricoServiceTest {
         c.setPrioridade(PrioridadeChamado.ALTA);
 
         // c.setStatus(); NÃO PRECISA PORQUE O CHAMADO JÁ É CRIADO COM STATUS = ABERTO
-        var chamadoAtualizado = serviceChamado.criarChamado(c, autor);
+        serviceChamado.criarChamado(c, autor.getId());
 
-        assertEquals(1, chamadoAtualizado.getHistorico().size());
-        assertEquals("Chamado aberto por Usuário de teste", chamadoAtualizado.getHistorico().getFirst().getDescricao());
+        assertEquals(1, c.getHistorico().size());
+        assertEquals("Chamado aberto por Usuário de teste", c.getHistorico().getFirst().getDescricao());
     }
 
     @Test
@@ -62,11 +62,11 @@ public class HistoricoServiceTest {
         c.setDescricao("TESTE DESCRIÇÃO");
         c.setCategoria(CategoriaChamado.REDE);
         c.setPrioridade(PrioridadeChamado.ALTA);
-        var chamadoAtualizado = serviceChamado.criarChamado(c, tecnicoResponsa);
+        serviceChamado.criarChamado(c, tecnicoResponsa.getId());
 
-        serviceChamado.atribuirTecnico(chamadoAtualizado.getId().toString(), tecnicoResponsa.getId().toString());
+        serviceChamado.atribuirTecnico(c.getId().toString(), tecnicoResponsa.getId().toString());
 
-        var historico = serviceChamado.pegarTodoHistoricoPorId(chamadoAtualizado.getId());
+        var historico = serviceChamado.pegarTodoHistoricoPorId(c.getId());
 
         assertEquals("Chamado atribuído ao técnico Usuário de teste", historico.get(1).getDescricao());
     }
@@ -84,10 +84,10 @@ public class HistoricoServiceTest {
         c.setDescricao("TESTE DESCRIÇÃO");
         c.setCategoria(CategoriaChamado.REDE);
         c.setPrioridade(PrioridadeChamado.ALTA);
-        var chamadoAtualizado = serviceChamado.criarChamado(c, tecnicoResponsa);
+        serviceChamado.criarChamado(c, tecnicoResponsa.getId());
 
-        serviceChamado.alterarStatus(String.valueOf(chamadoAtualizado.getId()), StatusChamado.CANCELADO, String.valueOf(tecnicoResponsa.getId()));
-        var historico = serviceChamado.pegarTodoHistoricoPorId(chamadoAtualizado.getId());
+        serviceChamado.alterarStatus(String.valueOf(c.getId()), StatusChamado.CANCELADO, String.valueOf(tecnicoResponsa.getId()));
+        var historico = serviceChamado.pegarTodoHistoricoPorId(c.getId());
 
         assertEquals("Status alterado de " + StatusChamado.ABERTO
                 + " para " + StatusChamado.CANCELADO + " por: " + tecnicoResponsa.getNome(), historico.get(1).getDescricao());

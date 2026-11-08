@@ -46,7 +46,7 @@ class ChamadoControllerTest {
         chamado.setCategoria(CategoriaChamado.SOFTWARE);
         chamado.setPrioridade(PrioridadeChamado.MEDIA);
         chamado.setStatus(StatusChamado.ABERTO);
-        service.criarChamado(chamado, usuario);
+        service.criarChamado(chamado, usuario.getId());
 
         var resposta = service.pegarPorId(chamado.getId());
 

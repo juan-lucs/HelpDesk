@@ -4,10 +4,13 @@ import com.juanlucas.helpdesk.Enum.StatusChamado;
 import com.juanlucas.helpdesk.Model.Entity.Chamado;
 import com.juanlucas.helpdesk.Model.Entity.Usuario;
 import com.juanlucas.helpdesk.Service.ChamadoService;
+import com.juanlucas.helpdesk.controller.DTO.ChamadoDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
@@ -19,8 +22,13 @@ public class ChamadoController {
 
 
     @PostMapping("/chamado")
-    public void criarChamado(@RequestBody Chamado c, Usuario u) {
-        service.criarChamado(c, u);
+    public ResponseEntity<Void> criarChamado(@RequestBody ChamadoDTO c) {
+        var chamadoEntidade = c.mapearparaChamado();
+        service.criarChamado(chamadoEntidade, UUID.fromString(c.idCriador()));
+
+        // http://localhost:8080/chamado/ID DO chamado QUE FOI CRIADO PELO BANCOOO
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(chamadoEntidade.getId()).toUri();
+        return ResponseEntity.created(location).build();
     }
 
     @GetMapping("/{id}")

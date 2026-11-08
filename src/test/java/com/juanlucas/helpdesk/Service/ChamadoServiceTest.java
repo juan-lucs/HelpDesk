@@ -68,9 +68,9 @@ class ChamadoServiceTest {
         chamado.setCategoria(CategoriaChamado.SOFTWARE);
         chamado.setPrioridade(PrioridadeChamado.MEDIA);
 
-        var chamadoAtualizado = service.criarChamado(chamado, usuario);
+        service.criarChamado(chamado, usuario.getId());
 
-        assertNotNull(chamadoAtualizado.getDataCriacao());
+        assertNotNull(chamado.getDataCriacao());
     }
 
     @Test
@@ -78,10 +78,10 @@ class ChamadoServiceTest {
         Usuario usuario = criarUsuario();
         Tecnico tecnico = criarTecnico();
         Chamado chamado = criarChamado();
-        var chamadoAtualizado = service.criarChamado(chamado, usuario);
-        service.atribuirTecnico(chamadoAtualizado.getId().toString(), tecnico.getId().toString());
+        service.criarChamado(chamado, usuario.getId());
+        service.atribuirTecnico(chamado.getId().toString(), tecnico.getId().toString());
 
-        Chamado atualizado = chamadoRepository.findById(chamadoAtualizado.getId()).orElseThrow();
+        Chamado atualizado = chamadoRepository.findById(chamado.getId()).orElseThrow();
         assertEquals(StatusChamado.EM_ATENDIMENTO, atualizado.getStatus());
         assertEquals(tecnico.getId(), atualizado.getTecnicoResponsavel().getId());
     }
@@ -92,10 +92,10 @@ class ChamadoServiceTest {
         Tecnico tecnico = criarTecnico();
         Chamado chamado = criarChamado();
         chamado.setTecnicoResponsavel(tecnico);
-        var chamadoAtualizado = service.criarChamado(chamado, usuario);
+        service.criarChamado(chamado, usuario.getId());
 
         assertThrows(ChamadocomTecnicojaResponsavelException.class,
-                () -> service.atribuirTecnico(chamadoAtualizado.getId().toString(), tecnico.getId().toString()));
+                () -> service.atribuirTecnico(chamado.getId().toString(), tecnico.getId().toString()));
 
     }
 
@@ -105,7 +105,7 @@ class ChamadoServiceTest {
         Tecnico tecnico = criarTecnico();
         Chamado chamado = criarChamado();
         chamado.setStatus(StatusChamado.FECHADO);
-        service.criarChamado(chamado, usuario);
+        service.criarChamado(chamado, usuario.getId());
         assertThrows(ChamadoFechadoouCanceladoException.class,
                 () -> service.atribuirTecnico(chamado.getId().toString(), tecnico.getId().toString()));
     }
@@ -114,8 +114,8 @@ class ChamadoServiceTest {
     void devePermitirCancelarChamadoSemTecnico() {
         Usuario usuario = criarUsuario();
         Chamado chamado = criarChamado();
-        var chamadoAtualizado = service.criarChamado(chamado, usuario);
-        service.alterarStatus(chamadoAtualizado.getId().toString(), StatusChamado.CANCELADO, String.valueOf(usuario.getId()));
+        service.criarChamado(chamado, usuario.getId());
+        service.alterarStatus(chamado.getId().toString(), StatusChamado.CANCELADO, String.valueOf(usuario.getId()));
 
         assertEquals(StatusChamado.CANCELADO,
                 chamadoRepository.findById(chamado.getId()).orElseThrow().getStatus());

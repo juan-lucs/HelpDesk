@@ -45,7 +45,7 @@ class ChamadoRepositoryTest {
         c.setCategoria(CategoriaChamado.REDE);
         c.setPrioridade(PrioridadeChamado.ALTA);
         // c.setStatus(); NAO PRECISA PORQUE O CHAMADO JÁ É CRIADO COM STATUS = ABERTO
-        service.criarChamado(c, usuario);
+        service.criarChamado(c, usuario.getId());
 
         assertNotNull(c.getId());
         assertNotNull(c.getDataCriacao());
