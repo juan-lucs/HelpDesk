@@ -5,7 +5,6 @@ public enum StatusChamado {
     EM_ATENDIMENTO
  ,
   AGUARDANDO_USUARIO
-
   ,
     FECHADO, // FECHADO seria quando o Tecnico fecha o chamado
 

@@ -10,6 +10,7 @@ import com.juanlucas.helpdesk.Model.Entity.Usuario;
 import com.juanlucas.helpdesk.Service.ChamadoService;
 import com.juanlucas.helpdesk.repository.ChamadoRepository;
 import com.juanlucas.helpdesk.repository.UsuarioRepository;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
