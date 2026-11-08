@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -15,10 +17,13 @@ import java.util.UUID;
 @Getter
 @Setter
 @ToString
+@EntityListeners(AuditingEntityListener.class) // vai analisar toda operação feita nessa entidade, buscando @CreateDate ou @LAstModifyDate
 public class Historico {
         @Id
         @GeneratedValue
         private UUID id;
+
+        @CreatedDate
         @Column( nullable = false)
         private LocalDateTime horaDaAlteracao;
 

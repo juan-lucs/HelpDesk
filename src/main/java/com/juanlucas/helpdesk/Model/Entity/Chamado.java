@@ -4,10 +4,11 @@ import com.juanlucas.helpdesk.Enum.CategoriaChamado;
 import com.juanlucas.helpdesk.Enum.PrioridadeChamado;
 import com.juanlucas.helpdesk.Enum.StatusChamado;
 import jakarta.persistence.*;
-import jdk.jshell.Snippet;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -71,6 +72,7 @@ public class Chamado {
     @JoinColumn(name = "chamado_id", nullable = false)
     private List<ComentariosChamado> comentarios = new ArrayList<>();
 
+    @CreatedDate
     @Column(nullable = false)
     private LocalDateTime dataCriacao;
 
