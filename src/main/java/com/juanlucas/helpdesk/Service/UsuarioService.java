@@ -21,17 +21,13 @@ public class UsuarioService {
         repository.save(usuario);
     }
 
-    public Tecnico salvarTecnico(Tecnico tecnico) throws EmailJaCadastradoException {
+    public void salvarTecnico(Tecnico tecnico) throws EmailJaCadastradoException {
         verificarEmail(tecnico.getEmail());
 
-        if (tecnico.getEspecialidade() == null ||
-                tecnico.getEspecialidade().toString().isBlank()) {
-            throw new IllegalArgumentException(
-                    "A especialidade é obrigatória"
-            );
+        if (tecnico.getEspecialidade() == null || tecnico.getEspecialidade().toString().isBlank()) {
+            throw new IllegalArgumentException("A especialidade é obrigatória");
         }
-
-        return repository.save(tecnico);
+        repository.save(tecnico);
     }
 
     private void verificarEmail(String email) throws EmailJaCadastradoException {

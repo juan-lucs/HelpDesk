@@ -5,6 +5,7 @@ import com.juanlucas.helpdesk.Model.Entity.ComentariosChamado;
 import com.juanlucas.helpdesk.Model.Entity.Usuario;
 import com.juanlucas.helpdesk.Service.ComentarioService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;

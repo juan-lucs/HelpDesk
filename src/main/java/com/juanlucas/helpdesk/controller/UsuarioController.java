@@ -3,6 +3,7 @@ package com.juanlucas.helpdesk.controller;
 import com.juanlucas.helpdesk.Model.Entity.Tecnico;
 import com.juanlucas.helpdesk.Model.Entity.Usuario;
 import com.juanlucas.helpdesk.Service.UsuarioService;
+import com.juanlucas.helpdesk.controller.DTO.TecnicoDTO;
 import com.juanlucas.helpdesk.controller.DTO.UsuarioDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +15,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("usuarios")
+@RequestMapping("usuario")
 @RequiredArgsConstructor
 public class UsuarioController {
     private final UsuarioService service;
@@ -24,15 +25,20 @@ public class UsuarioController {
         var usuarioEntidade = usuario.mapearparaUsuario();
         service.salvarUsuario(usuarioEntidade);
 
-        // http://localhost:8080/usuarios/ID DO USUARIO QUE FOI CRIADO PELO BANCOOO
+        // http://localhost:8080/usuario/ID DO USUARIO QUE FOI CRIADO PELO BANCOOO
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(usuarioEntidade.getId()).toUri();
 
         return ResponseEntity.created(location).build(); // Uma resposta boa, dizendo que usuario foi criado
     }
 
     @PostMapping("/tecnico")
-    public Tecnico salvarTecnico(@RequestBody Tecnico tecnico) {
-        return service.salvarTecnico(tecnico);
+    public ResponseEntity<Void> salvarTecnico(@RequestBody TecnicoDTO tecnico) {
+        var tecnicoEntidade = tecnico.mapearparaTenico();
+        service.salvarTecnico(tecnicoEntidade);
+
+        // http://localhost:8080/tecnico/ID DO USUARIO QUE FOI CRIADO PELO BANCOOO
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(tecnicoEntidade.getId()).toUri();
+        return ResponseEntity.created(location).build();
     }
 
     @GetMapping("{id}")

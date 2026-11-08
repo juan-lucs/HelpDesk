@@ -62,12 +62,13 @@ class UsuarioServiceTest {
         tecnico.setNome("Técnico de teste");
         tecnico.setEmail(emailUnico("tecnico"));
         tecnico.setEspecialidade(EspecialidadeEnum.values()[0]);
+        var testeEmail = tecnico.getEmail();
+        var testeEspeci = tecnico.getEspecialidade();
+        service.salvarTecnico(tecnico);
 
-        Tecnico salvo = service.salvarTecnico(tecnico);
-
-        assertNotNull(salvo.getId());
-        assertEquals(tecnico.getEmail(), salvo.getEmail());
-        assertEquals(tecnico.getEspecialidade(), salvo.getEspecialidade());
+        assertNotNull(tecnico.getId());
+        assertEquals(testeEmail, tecnico.getEmail());
+        assertEquals(testeEspeci, tecnico.getEspecialidade());
     }
 
     @Test
