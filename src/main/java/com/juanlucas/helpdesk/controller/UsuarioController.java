@@ -42,10 +42,20 @@ public class UsuarioController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Usuario> pegarPorId(@PathVariable("id") String id) {
+    public ResponseEntity<UsuarioDTO> pegarPorId(@PathVariable("id") String id) {
         var idUser = UUID.fromString(id);
 
-        return service.pegarPorId(idUser).map(autor -> ResponseEntity.ok(autor)).orElseGet(() -> ResponseEntity.notFound().build());
+        return service.pegarPorId(idUser)
+                .map(usuario -> new UsuarioDTO(usuario.getId(), usuario.getNome(), usuario.getEmail()))
+
+                // IMPORTANTE, ELE AINDA É UM OPTIONAL APÓS O PRIMEIRO .MAP, PORQUE O .MAP RETORNA UM OPTIONAL.
+                // A DIFERENÇA É QUE AGORA ELE É UM OPTIONAL<UsuarioDTO>, não um Optional<Usuario>
+
+                .map(dto -> ResponseEntity.ok(dto))
+                .orElseGet(() -> ResponseEntity.notFound().build()); // aqui o valor dentro do optional de cima é pego, ou vira NOTFOUND()
+
+        // nomes antes do -> são PARÂMETROS de uma expressão lambda.
+        // Eles RECEBEM o valor que será usado no código depois da seta.
     }
 
     @GetMapping("/usuarios")

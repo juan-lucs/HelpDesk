@@ -5,16 +5,15 @@ import com.juanlucas.helpdesk.Exception.*;
 import com.juanlucas.helpdesk.Model.Entity.Chamado;
 import com.juanlucas.helpdesk.Model.Entity.Historico;
 import com.juanlucas.helpdesk.Model.Entity.Tecnico;
-import com.juanlucas.helpdesk.Model.Entity.Usuario;
 import com.juanlucas.helpdesk.repository.ChamadoRepository;
 import com.juanlucas.helpdesk.repository.UsuarioRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import static com.juanlucas.helpdesk.Enum.StatusChamado.CANCELADO;
