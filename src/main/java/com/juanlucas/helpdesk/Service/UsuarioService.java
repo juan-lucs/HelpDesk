@@ -27,6 +27,7 @@ public class UsuarioService {
         if (tecnico.getEspecialidade() == null || tecnico.getEspecialidade().toString().isBlank()) {
             throw new IllegalArgumentException("A especialidade é obrigatória");
         }
+
         repository.save(tecnico);
     }
 
@@ -42,9 +43,10 @@ public class UsuarioService {
         return repository.findById(idUser);
     }
 
-    public List<Usuario> pegarTodosUsuarios(){
-        return repository.buscarUsuarios();
+    public Optional<Tecnico> pegarTecnicoPorId(UUID idTec) {
+        return repository.findTecnicoByid(idTec);
     }
+
 
     public List<Tecnico> pegarTodosTecnicos(){
         return repository.buscarTecnicos();

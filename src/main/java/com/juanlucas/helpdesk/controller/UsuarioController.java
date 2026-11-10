@@ -42,7 +42,7 @@ public class UsuarioController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<UsuarioDTO> pegarPorId(@PathVariable("id") String id) {
+    public ResponseEntity<UsuarioDTO> pegarUsuarioPorId(@PathVariable("id") String id) {
         var idUser = UUID.fromString(id);
 
         return service.pegarPorId(idUser)
@@ -58,14 +58,21 @@ public class UsuarioController {
         // Eles RECEBEM o valor que será usado no código depois da seta.
     }
 
-    @GetMapping("/usuarios")
-    public List<Usuario> pegarTodosUsuarios() {
-        return service.pegarTodosUsuarios();
-    }
+    @GetMapping("/tecnico/{id}")
+    public ResponseEntity<TecnicoDTO> pegarPorId(@PathVariable("id") String id) {
+        var idTec = UUID.fromString(id);
 
-    @GetMapping("/tecnicos")
-    public List<Tecnico> pegarTodosTecnicos() {
-        return service.pegarTodosTecnicos();
+        return service.pegarTecnicoPorId(idTec)
+                .map(tecnico -> new TecnicoDTO(tecnico.getId(), tecnico.getNome(), tecnico.getEmail(), tecnico.getEspecialidade()))
+
+                // IMPORTANTE, ELE AINDA É UM OPTIONAL APÓS O PRIMEIRO .MAP, PORQUE O .MAP RETORNA UM OPTIONAL.
+                // A DIFERENÇA É QUE AGORA ELE É UM OPTIONAL<UsuarioDTO>, não um Optional<Usuario>
+
+                .map(dto -> ResponseEntity.ok(dto))
+                .orElseGet(() -> ResponseEntity.notFound().build()); // aqui o valor dentro do optional de cima é pego, ou vira NOTFOUND()
+
+        // nomes antes do -> são PARÂMETROS de uma expressão lambda.
+        // Eles RECEBEM o valor que será usado no código depois da seta.
     }
 
 
