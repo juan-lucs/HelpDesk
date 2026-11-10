@@ -32,8 +32,12 @@ public class ChamadoController {
     }
 
     @GetMapping("/{id}")
-    public Chamado pegarPorId(@PathVariable String id) {
-        return service.pegarPorId(UUID.fromString(id));
+    public ResponseEntity<ChamadoDTO> obterDetalhes(@PathVariable String id) {
+        var idChamado = UUID.fromString(id);
+        return service.pegarPorId(UUID.fromString(id))
+                .map(chamado -> new ChamadoDTO(chamado.getTitulo(), chamado.getDescricao(), chamado.getCategoria(), chamado.getPrioridade(), chamado.getUsuarioCriador().getId().toString()))
+                .map(dto -> ResponseEntity.ok(dto))
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping

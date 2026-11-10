@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static com.juanlucas.helpdesk.Enum.StatusChamado.CANCELADO;
@@ -34,8 +35,8 @@ public class ChamadoService {
         serviceHistorico.registrarAbertura(c);
     }
 
-    public Chamado pegarPorId(UUID idChamado) {
-        return repositoryChamado.findById(idChamado).orElseThrow(() -> new ChamadoNaoEncontradoException("Chamado não encontrado!"));
+    public Optional<Chamado> pegarPorId(UUID idChamado) {
+        return repositoryChamado.findById(idChamado);
     }
 
     public List<Historico> pegarTodoHistoricoPorId(UUID idChamado) {
