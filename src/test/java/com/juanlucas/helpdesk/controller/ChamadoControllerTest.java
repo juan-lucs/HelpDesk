@@ -3,7 +3,6 @@ package com.juanlucas.helpdesk.controller;
 import com.juanlucas.helpdesk.Enum.CategoriaChamado;
 import com.juanlucas.helpdesk.Enum.PrioridadeChamado;
 import com.juanlucas.helpdesk.Enum.StatusChamado;
-import com.juanlucas.helpdesk.Exception.ChamadoNaoEncontradoException;
 import com.juanlucas.helpdesk.Model.Entity.Chamado;
 import com.juanlucas.helpdesk.Model.Entity.Tecnico;
 import com.juanlucas.helpdesk.Model.Entity.Usuario;
@@ -50,12 +49,12 @@ class ChamadoControllerTest {
 
         var resposta = service.pegarPorId(chamado.getId());
 
-        assertEquals(chamado.getId(), resposta.getId());
+        assertEquals(chamado.getId(), resposta.orElseThrow().getId());
 
     }
 
     @Test
-    void deveRetornarNaoEncontradoQuandoChamadoNaoExiste() {
-        assertThrows(ChamadoNaoEncontradoException.class, () -> service.pegarPorId(UUID.randomUUID()));
+    void deveRetornarOptionalVazioQuandoChamadoNaoExiste() {
+        assertTrue(service.pegarPorId(UUID.randomUUID()).isEmpty());
     }
 }

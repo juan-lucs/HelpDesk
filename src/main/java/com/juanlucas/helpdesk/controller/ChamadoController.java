@@ -1,8 +1,9 @@
 package com.juanlucas.helpdesk.controller;
 
+import com.juanlucas.helpdesk.Enum.CategoriaChamado;
+import com.juanlucas.helpdesk.Enum.PrioridadeChamado;
 import com.juanlucas.helpdesk.Enum.StatusChamado;
 import com.juanlucas.helpdesk.Model.Entity.Chamado;
-import com.juanlucas.helpdesk.Model.Entity.Usuario;
 import com.juanlucas.helpdesk.Service.ChamadoService;
 import com.juanlucas.helpdesk.controller.DTO.ChamadoDTO;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -41,8 +44,11 @@ public class ChamadoController {
     }
 
     @GetMapping
-    public List<Chamado> pegarTodos() {
-        return service.pegarTodos();
+    public List<Chamado> filtrar(@RequestParam(required = false) String titulo,
+                                 @RequestParam(required = false) CategoriaChamado categoria,
+                                 @RequestParam(required = false) PrioridadeChamado prioridade,
+                                 @RequestParam(required = false) LocalDate dataCriacao) {
+        return service.filtrar(titulo, categoria, prioridade, dataCriacao);
     }
 
     @PatchMapping("/atribuirtecnicochamado")
