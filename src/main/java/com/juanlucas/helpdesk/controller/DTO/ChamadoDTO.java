@@ -12,6 +12,7 @@ public record ChamadoDTO(String titulo, String descricao, CategoriaChamado categ
         c.setDescricao(this.descricao);
         c.setCategoria(categoria);
         c.setPrioridade(prioridade);
+        c.setUsuarioCriador(null);
         return c;
     }
 }

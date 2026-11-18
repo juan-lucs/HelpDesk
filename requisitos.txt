@@ -1,0 +1,30 @@
+ID	    Requisito	                                    Status	                Análise
+RF01	Cadastrar usuário com ID, nome, e-mail único	✅ Pronto	            Cadastro implementado em UsuarioController e UsuarioService, com validação de e-mail duplicado.
+
+RF02	consultar usuários	✅ Pronto	                                Existem consultas por ID e listagem de usuários.
+
+RF03	Cadastrar técnico com especialidade	✅ Pronto	                        Técnico possui nome, e-mail e especialidade obrigatória.
+
+RF04	consultar técnicos	✅ Pronto                                ta feito pae
+
+RF05	Abrir chamado informando título, descrição, categoria e prioridade	🟡 Parcial	O serviço cria o chamado, associa o usuário, gera ID, data e histórico. Porém, o controller não recebe corretamente o usuário e não valida campos vazios.
+
+RF06	Utilizar categorias e prioridades válidas	✅ Pronto	               Categorias e prioridades estão implementadas como enums e armazenadas como obrigatórias.
+
+RF07	Listar e consultar chamados	✅ Pronto	                               Existem endpoints para listar chamados e consultar por ID.
+
+RF08	Visualizar detalhes completos do chamado	🟡 Parcial	               O endpoint retorna o chamado, mas comentários e histórico não estão expostos de forma segura e podem causar problemas de serialização.
+
+RF09	Atribuir técnico ao chamado	✅ Pronto	                               O técnico é associado, o status muda para EM_ATENDIMENTO e a atribuição é registrada no histórico.
+
+RF10	Controlar fluxo de status do chamado	🟡 Parcial	                   Existem regras de transição, mas não existe o status RESOLVIDO. Além disso, o chamado pode voltar de FECHADO para EM_ATENDIMENTO, contrariando o exemplo original.
+
+RF11	Permitir comentários de usuários e técnicos	🟡 Parcial	               O serviço permite comentários e bloqueia chamados fechados/cancelados. Porém, o controller possui dois @RequestBody, o que impede o uso correto da API.
+
+RF12	Registrar comentários no histórico	🔴 Falta	                       Existe um método registrarComentario, mas ele nunca é chamado pelo ComentarioService.
+
+RF13	Registrar e consultar histórico do chamado	🟡 Parcial	               Abertura, atribuição e alteração de status são registradas. A consulta existe no serviço, mas não há endpoint HTTP para ela.
+
+RF14	Exibir dashboard com métricas dos chamados	🔴 Falta	               Não encontrei implementação de dashboard, agregações ou endpoint de métricas.
+
+RF15	Disponibilizar interface visual para uso do sistema	🔴 Falta	       O projeto contém apenas o backend Java. Não há frontend, telas de lista, detalhes ou dashboard.
