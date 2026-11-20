@@ -16,6 +16,14 @@ public class UsuarioService {
 
     private final UsuarioRepository repository;
 
+    private void verificarEmail(String email) throws EmailJaCadastradoException {
+        if (repository.existsByEmail(email)) {
+            throw new EmailJaCadastradoException(
+                    "Email já cadastrado"
+            );
+        }
+    }
+
     public void salvarUsuario(Usuario usuario) throws EmailJaCadastradoException {
         verificarEmail(usuario.getEmail());
         repository.save(usuario);
@@ -29,14 +37,6 @@ public class UsuarioService {
         }
 
         repository.save(tecnico);
-    }
-
-    private void verificarEmail(String email) throws EmailJaCadastradoException {
-        if (repository.existsByEmail(email)) {
-            throw new EmailJaCadastradoException(
-                    "Email já cadastrado"
-            );
-        }
     }
 
     public Optional<Usuario> pegarPorId(UUID idUser) {

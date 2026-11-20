@@ -1,6 +1,8 @@
 package com.juanlucas.helpdesk.controller;
 
+import com.juanlucas.helpdesk.Exception.EmailJaCadastradoException;
 import com.juanlucas.helpdesk.Service.UsuarioService;
+import com.juanlucas.helpdesk.controller.DTO.ErroResposta;
 import com.juanlucas.helpdesk.controller.DTO.TecnicoDTO;
 import com.juanlucas.helpdesk.controller.DTO.UsuarioDTO;
 import lombok.RequiredArgsConstructor;
@@ -18,14 +20,20 @@ public class UsuarioController {
     private final UsuarioService service;
 
     @PostMapping
-    public ResponseEntity<Object> salvarUsuario(@RequestBody UsuarioDTO usuario){
-        var usuarioEntidade = usuario.mapearparaUsuario();
-        service.salvarUsuario(usuarioEntidade);
+    public ResponseEntity<?> salvarUsuario(@RequestBody UsuarioDTO usuario) {
+        try {
+            var usuarioEntidade = usuario.mapearparaUsuario();
 
-        // http://localhost:8080/usuario/ID DO USUARIO QUE FOI CRIADO PELO BANCOOO
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(usuarioEntidade.getId()).toUri();
+            service.salvarUsuario(usuarioEntidade);
 
-        return ResponseEntity.created(location).build(); // Uma resposta boa, dizendo que usuario foi criado
+            // http://localhost:8080/usuario/ID DO USUARIO QUE FOI CRIADO PELO BANCOOO
+            URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(usuarioEntidade.getId()).toUri();
+
+            return ResponseEntity.created(location).build(); // Uma resposta boa, dizendo que usuario foi criado
+        } catch (EmailJaCadastradoException e) {
+            var erroDTO = ErroResposta.conflito(e.getMessage());
+            return ResponseEntity.status(erroDTO.status()).body(erroDTO);
+        }
     }
 
     @PostMapping("/tecnico")
