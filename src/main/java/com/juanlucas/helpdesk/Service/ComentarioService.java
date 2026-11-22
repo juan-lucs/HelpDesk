@@ -8,19 +8,22 @@ import com.juanlucas.helpdesk.Model.Entity.Chamado;
 import com.juanlucas.helpdesk.Model.Entity.ComentariosChamado;
 import com.juanlucas.helpdesk.Model.Entity.Usuario;
 import com.juanlucas.helpdesk.repository.ChamadoRepository;
+import com.juanlucas.helpdesk.repository.ComentariosChamadoRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import com.juanlucas.helpdesk.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class ComentarioService {
 
-//    private final ComentariosChamadoRepository repository;
+    private final ComentariosChamadoRepository repository;
     private final ChamadoRepository repositoryChamado;
     private final UsuarioRepository repositoryUsuario;
 
@@ -33,9 +36,14 @@ public class ComentarioService {
             throw new ChamadoFechadoouCanceladoException("Um chamado " + chamado.getStatus() + " não pode receber comentários!");
         }
             com.setAutor(Autor);
-            com.setDataComentario(LocalDateTime.now());
+            com.setChamadoDono(chamado);
+            chamado.getComentarios().add(com);
             repositoryChamado.findById(chamado.getId()).ifPresent(c -> c.getComentarios().add(com));
             // vai salvar sem o repository.save ao fechar a transação
         // e o comentário também graças ao cascade
+    }
+
+    public List<ComentariosChamado> pegarTodos(UUID idChamado) {
+        return repository.findAllById(idChamado);
     }
 }

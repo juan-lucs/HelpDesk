@@ -69,8 +69,7 @@ public class Chamado {
 
     // Mesma lógica do histórico: os comentários dependem do chamado,
     // então nascem, mudam e morrem junto com ele.
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @JoinColumn(name = "chamado_id", nullable = false)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "chamadoDono")
     private List<ComentariosChamado> comentarios = new ArrayList<>();
 
     @CreatedDate
