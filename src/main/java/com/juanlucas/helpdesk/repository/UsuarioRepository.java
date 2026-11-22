@@ -17,6 +17,9 @@ boolean existsByEmail(String email);
 @Query("SELECT t FROM Usuario t WHERE t.id = :id AND TYPE(t) = Tecnico")
 Optional<Tecnico> findTecnicoByid(@Param("id") UUID id);
 
+@Query("SELECT u FROM Usuario u WHERE u.id = :id AND TYPE(u) = Usuario")
+Optional<Usuario> findUsuarioByid(@Param("id") UUID id);
+
 @Query("SELECT u FROM Usuario u WHERE TYPE(u) = Tecnico")
 List<Tecnico> buscarTecnicos();
 

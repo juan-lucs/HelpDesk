@@ -72,6 +72,18 @@ class UsuarioServiceTest {
     }
 
     @Test
+    void deveConsultarTecnicoSomentePelaBuscaDeTecnicos() {
+        var tecnico = new Tecnico();
+        tecnico.setNome("Técnico para consulta");
+        tecnico.setEmail(emailUnico("consulta-tecnico"));
+        tecnico.setEspecialidade(EspecialidadeEnum.SOFTWARE);
+        service.salvarTecnico(tecnico);
+
+        assertTrue(service.pegarPorId(tecnico.getId()).isEmpty());
+        assertEquals(tecnico.getId(), service.pegarTecnicoPorId(tecnico.getId()).orElseThrow().getId());
+    }
+
+    @Test
     void deveImpedirTecnicoSemEspecialidade() {
         Tecnico tecnico = new Tecnico();
         tecnico.setNome("Técnico de teste");

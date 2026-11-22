@@ -40,13 +40,12 @@ public class UsuarioService {
     }
 
     public Optional<Usuario> pegarPorId(UUID idUser) {
-        return repository.findById(idUser);
+        return repository.findUsuarioByid(idUser);
     }
 
     public Optional<Tecnico> pegarTecnicoPorId(UUID idTec) {
         return repository.findTecnicoByid(idTec);
     }
-
 
     public List<Tecnico> pegarTodosTecnicos(){
         return repository.buscarTecnicos();

@@ -107,7 +107,7 @@ Sucesso: `200`.
 }
 ```
 
-Erros: `400` ou `404`. Como técnico também é usuário, esta consulta aceita seu ID e retorna os campos comuns; a especialidade é consultada em `/tecnicos/{id}`.
+Erros: `400` ou `404`. Esta consulta retorna somente usuários comuns. Um ID de técnico retorna `404` nesta rota. Consulte técnicos em `/tecnicos/{id}`.
 
 ### Listar usuários comuns
 
