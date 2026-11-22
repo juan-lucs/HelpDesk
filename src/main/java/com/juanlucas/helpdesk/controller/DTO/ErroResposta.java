@@ -14,5 +14,7 @@ public record ErroResposta(int status, String mensagem, List<ErroCampo> erros) {
         return new ErroResposta(HttpStatus.CONFLICT.value(), mensagem, List.of());
     }
 
-
+    public static ErroResposta validacao(List<ErroCampo> erros) {
+        return new ErroResposta(422, "Erro de validação", erros);
+    }
 }
