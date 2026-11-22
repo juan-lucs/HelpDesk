@@ -47,8 +47,10 @@ public class ChamadoController {
     public List<Chamado> filtrar(@RequestParam(required = false) String titulo,
                                  @RequestParam(required = false) CategoriaChamado categoria,
                                  @RequestParam(required = false) PrioridadeChamado prioridade,
-                                 @RequestParam(required = false) LocalDate dataCriacao) {
-        return service.filtrar(titulo, categoria, prioridade, dataCriacao);
+                                 @RequestParam(required = false) LocalDate dataCriacao,
+                                 @RequestParam(required = false) UUID idCriador,
+                                 @RequestParam(required = false) UUID idTecnico) {
+        return service.filtrar(titulo, categoria, prioridade, dataCriacao, idCriador, idTecnico);
     }
 
     @PatchMapping("/atribuirtecnicochamado")

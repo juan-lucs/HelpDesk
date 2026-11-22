@@ -49,7 +49,7 @@ public class ChamadoService {
     // import jakarta.persistence.criteria.Predicate;  <- precisa ser este Predicate
 
     public List<Chamado> filtrar(String titulo, CategoriaChamado categoria,
-                                 PrioridadeChamado prioridade, LocalDate dataCriacao) {
+                                 PrioridadeChamado prioridade, LocalDate dataCriacao, UUID idCriador, UUID idTecnico) {
 
         // Specification<Chamado> é uma interface funcional do Spring Data JPA:
         // tem um único método ABSTRATO, Predicate toPredicate(Root<T> root , CriteriaQuery<?> query , CriteriaBuilder cb ).
@@ -106,6 +106,17 @@ public class ChamadoService {
                 );
             } // cria o Predicate: dataCriacao BETWEEN inicio , fim
 
+            if (idCriador != null) {
+                condicoes.add(
+                        cb.equal(root.get("usuarioCriador").get("id"), idCriador)
+                );
+            }
+
+            if (idTecnico != null) {
+                condicoes.add(
+                        cb.equal(root.get("tecnicoResponsavel").get("id"), idTecnico)
+                );
+            }
             // cb.and(Predicate...) é varargs: aceita predicados avulsos OU um array de Predicate.
             // Como a quantidade de condições varia, elas estão numa List, então convertemos em array.
             // toArray(new Predicate[0]): o array vazio só informa o TIPO (Predicate[]).

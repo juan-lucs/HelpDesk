@@ -17,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -84,6 +85,25 @@ class ChamadoServiceTest {
         Chamado atualizado = chamadoRepository.findById(chamado.getId()).orElseThrow();
         assertEquals(StatusChamado.EM_ATENDIMENTO, atualizado.getStatus());
         assertEquals(tecnico.getId(), atualizado.getTecnicoResponsavel().getId());
+    }
+
+    @Test
+    void deveFiltrarChamadosPelosIdsDoCriadorEDoTecnico() {
+        var criador = criarUsuario();
+        var outroCriador = criarUsuario();
+        var tecnico = criarTecnico();
+        var chamado = criarChamado();
+        var chamadoSemTecnico = criarChamado();
+        var chamadoDeOutroCriador = criarChamado();
+        service.criarChamado(chamado, criador.getId());
+        service.criarChamado(chamadoSemTecnico, criador.getId());
+        service.criarChamado(chamadoDeOutroCriador, outroCriador.getId());
+        service.atribuirTecnico(chamado.getId().toString(), tecnico.getId().toString());
+        service.atribuirTecnico(chamadoDeOutroCriador.getId().toString(), tecnico.getId().toString());
+
+        var filtrados = service.filtrar(null, null, null, null, criador.getId(), tecnico.getId());
+
+        assertEquals(List.of(chamado.getId()), filtrados.stream().map(Chamado::getId).toList());
     }
 
     @Test
