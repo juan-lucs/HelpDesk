@@ -27,7 +27,7 @@ public class ChamadoController {
     @PostMapping("/chamado")
     public ResponseEntity<Void> criarChamado(@RequestBody ChamadoDTO c) {
         var chamadoEntidade = c.mapearparaChamado();
-        service.criarChamado(chamadoEntidade, UUID.fromString(c.idCriador()));
+        service.criarChamado(chamadoEntidade, c.idCriador());
 
         // http://localhost:8080/chamado/ID DO chamado QUE FOI CRIADO PELO BANCOOO
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(chamadoEntidade.getId()).toUri();
@@ -38,7 +38,7 @@ public class ChamadoController {
     public ResponseEntity<ChamadoDTO> obterDetalhes(@PathVariable String id) {
         var idChamado = UUID.fromString(id);
         return service.pegarPorId(UUID.fromString(id))
-                .map(chamado -> new ChamadoDTO(chamado.getTitulo(), chamado.getDescricao(), chamado.getCategoria(), chamado.getPrioridade(), chamado.getUsuarioCriador().getId().toString()))
+                .map(chamado -> new ChamadoDTO(chamado.getTitulo(), chamado.getDescricao(), chamado.getCategoria(), chamado.getPrioridade(), chamado.getUsuarioCriador().getId()))
                 .map(dto -> ResponseEntity.ok(dto))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
