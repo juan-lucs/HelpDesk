@@ -6,7 +6,6 @@ import com.juanlucas.helpdesk.Enum.StatusChamado;
 import com.juanlucas.helpdesk.Exception.*;
 import com.juanlucas.helpdesk.Model.Entity.Chamado;
 import com.juanlucas.helpdesk.Model.Entity.Historico;
-import com.juanlucas.helpdesk.Model.Entity.Tecnico;
 import com.juanlucas.helpdesk.repository.ChamadoRepository;
 import com.juanlucas.helpdesk.repository.UsuarioRepository;
 import jakarta.transaction.Transactional;
@@ -133,22 +132,19 @@ public class ChamadoService {
     public void atribuirTecnico(String idChamado, String idTecnico) {
         var chamado = repositoryChamado.findById(UUID.fromString(idChamado)).orElseThrow(() -> new RuntimeException("Chamado não encontrado!"));
 
-        var usuario = repositoryUsuario.findById(UUID.fromString(idTecnico)).orElseThrow(() -> new RuntimeException("Técnico não encontrado!"));
+        var tecnico = repositoryUsuario.findTecnicoByid(UUID.fromString(idTecnico))
+                .orElseThrow(() -> new RuntimeException("Técnico não encontrado!"));
 
-        if (!(usuario instanceof Tecnico tecnico)) { // verifica se Usuario é um OBJETO tipo Tecnico, não Usuário.
-            throw new RuntimeException("Apenas Tecnicos podem assumir chamados!");
-        }
         if (chamado.getTecnicoResponsavel() != null) { // Verifica se o chamado já tem um técnico, se não for null ele dá erro, se for null ele passa reto
             throw new ChamadocomTecnicojaResponsavelException("Este chamado já possuí um Tecnico responsável");
         }
         if (chamado.getStatus() == StatusChamado.FECHADO || chamado.getStatus() == CANCELADO) {
             throw new ChamadoFechadoouCanceladoException("Um chamado " + chamado.getStatus() + " não pode ter Tecnicos atribuidos!");
         }
-
         chamado.setTecnicoResponsavel(tecnico);
-        chamado.setStatus(StatusChamado.EM_ATENDIMENTO);
         repositoryChamado.save(chamado);
-        serviceHistorico.registrarAtribuicaoTecnico(chamado); // registra a atribuicao em historico deste chamado
+        serviceHistorico.registrarAtribuicaoTecnico(chamado);
+        alterarStatus(idChamado, StatusChamado.EM_ATENDIMENTO, idTecnico);
     }
 
     @Transactional

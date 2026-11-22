@@ -55,16 +55,17 @@ public class HistoricoService {
     // Ex: "10:32 — João abriu o chamado"
     @Transactional
     public void registrarAbertura(Chamado chamado) {
-        String descricao = "Chamado aberto por " + chamado.getUsuarioCriador().getNome();
-        registrarHistorico(chamado, chamado.getUsuarioCriador(), descricao);
+        var autor = chamado.getUsuarioCriador();
+        String descricao = "Chamado aberto por " + autor.getNome();
+        registrarHistorico(chamado, autor, descricao);
     }
 
     // Regra de negócio: Toda atribuição de técnico deve ser registrada no histórico
     @Transactional
     public void registrarAtribuicaoTecnico(Chamado chamado) {
-        // autor aqui é quem atribuiu (técnico)
-        String descricao = "Chamado atribuído ao técnico " + chamado.getTecnicoResponsavel().getNome();
-        registrarHistorico(chamado, chamado.getTecnicoResponsavel(), descricao);
+        var tecnico = chamado.getTecnicoResponsavel();
+        String descricao = "Chamado atribuído ao técnico " + tecnico.getNome();
+        registrarHistorico(chamado, tecnico, descricao);
     }
 
     // Regra de negócio: Toda alteração de status deve ser registrada no histórico

@@ -18,7 +18,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -68,7 +70,12 @@ public class HistoricoServiceTest {
 
         var historico = serviceChamado.pegarTodoHistoricoPorId(c.getId());
 
-        assertEquals("Chamado atribuído ao técnico Usuário de teste", historico.get(1).getDescricao());
+        assertEquals(3, historico.size());
+        assertEquals(Set.of(
+                "Chamado aberto por Usuário de teste",
+                "Chamado atribuído ao técnico Usuário de teste",
+                "Status alterado de ABERTO para EM_ATENDIMENTO por: Usuário de teste"
+        ), historico.stream().map(Historico::getDescricao).collect(Collectors.toSet()));
     }
 
     @Test
