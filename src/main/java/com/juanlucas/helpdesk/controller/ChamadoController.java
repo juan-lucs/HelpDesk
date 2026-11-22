@@ -3,10 +3,14 @@ package com.juanlucas.helpdesk.controller;
 import com.juanlucas.helpdesk.Enum.CategoriaChamado;
 import com.juanlucas.helpdesk.Enum.PrioridadeChamado;
 import com.juanlucas.helpdesk.Enum.StatusChamado;
+import com.juanlucas.helpdesk.Exception.UsuarioNaoEncontradoException;
 import com.juanlucas.helpdesk.Model.Entity.Chamado;
 import com.juanlucas.helpdesk.Service.ChamadoService;
 import com.juanlucas.helpdesk.controller.DTO.ChamadoDTO;
+import com.juanlucas.helpdesk.controller.DTO.ErroCampo;
+import com.juanlucas.helpdesk.controller.DTO.ErroResposta;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -25,12 +29,17 @@ public class ChamadoController {
 
 
     @PostMapping("/chamado")
-    public ResponseEntity<Void> criarChamado(@RequestBody ChamadoDTO c) {
+    public ResponseEntity<?> criarChamado(@RequestBody ChamadoDTO c) {
         var chamadoEntidade = c.mapearparaChamado();
-        service.criarChamado(chamadoEntidade, c.idCriador());
+        try {
+            service.criarChamado(chamadoEntidade, c.usuarioCriadorId());
+        } catch (UsuarioNaoEncontradoException e) {
+            var erro = new ErroResposta(HttpStatus.NOT_FOUND.value(), e.getMessage(), List.of());
+            return ResponseEntity.status(erro.status()).body(erro);
+        }
 
-        // http://localhost:8080/chamado/ID DO chamado QUE FOI CRIADO PELO BANCOOO
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(chamadoEntidade.getId()).toUri();
+        URI location = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path("/chamado/{id}").buildAndExpand(chamadoEntidade.getId()).toUri();
         return ResponseEntity.created(location).build();
     }
 

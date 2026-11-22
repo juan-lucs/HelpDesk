@@ -30,8 +30,8 @@ public class ChamadoService {
 
     @Transactional // IMPORTANTE PARA GARANTIR QUE O CHAMADO VAI SER SALVO JUNTO COM A ALTERAÇÃO DO HISTÓRICO
     public void criarChamado(Chamado c, UUID idUsuario) { // Chamado vem com titulo, descricao, categoria, prioridade e Status já definidos
-        c.setDataCriacao(LocalDateTime.now());
-        var usuario = repositoryUsuario.findById(idUsuario).orElseThrow(() -> new RuntimeException("Usuário inválido!"));
+        var usuario = repositoryUsuario.findById(idUsuario)
+                .orElseThrow(() -> new UsuarioNaoEncontradoException("Usuário criador não encontrado."));
         c.setUsuarioCriador(usuario);
         repositoryChamado.save(c);
         serviceHistorico.registrarAbertura(c);
