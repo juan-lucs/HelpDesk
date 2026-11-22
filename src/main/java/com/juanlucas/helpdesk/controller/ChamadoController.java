@@ -18,6 +18,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -52,14 +53,17 @@ public class ChamadoController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @GetMapping
-    public List<Chamado> filtrar(@RequestParam(required = false) String titulo,
+    @GetMapping("/filtro")
+    public ResponseEntity<List<ChamadoDTO>> filtrar(@RequestParam(required = false) String titulo,
                                  @RequestParam(required = false) CategoriaChamado categoria,
                                  @RequestParam(required = false) PrioridadeChamado prioridade,
                                  @RequestParam(required = false) LocalDate dataCriacao,
                                  @RequestParam(required = false) UUID idCriador,
                                  @RequestParam(required = false) UUID idTecnico) {
-        return service.filtrar(titulo, categoria, prioridade, dataCriacao, idCriador, idTecnico);
+        List<ChamadoDTO> chamados = service.filtrar(titulo, categoria, prioridade, dataCriacao, idCriador, idTecnico).stream()
+        .map(chamado -> new ChamadoDTO(chamado.getTitulo(), chamado.getDescricao(), chamado.getCategoria(), chamado.getPrioridade(), chamado.getUsuarioCriador().getId()))
+        .toList();
+        return ResponseEntity.ok(chamados);
     }
 
     @PatchMapping("/atribuirtecnicochamado")
