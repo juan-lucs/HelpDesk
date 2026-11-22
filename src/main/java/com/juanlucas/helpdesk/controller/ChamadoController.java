@@ -49,7 +49,7 @@ public class ChamadoController {
     public ResponseEntity<ChamadoDTO> obterDetalhes(@PathVariable String id) {
         var idChamado = UUID.fromString(id);
         return service.pegarPorId(UUID.fromString(id))
-                .map(chamado -> new ChamadoDTO(chamado.getTitulo(), chamado.getDescricao(), chamado.getCategoria(), chamado.getPrioridade(), chamado.getUsuarioCriador().getId()))
+                .map(chamado -> new ChamadoDTO(chamado.getTitulo(), chamado.getDescricao(), chamado.getCategoria(), chamado.getPrioridade(), chamado.getUsuarioCriador().getId(), chamado.getId()))
                 .map(dto -> ResponseEntity.ok(dto))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -62,7 +62,7 @@ public class ChamadoController {
                                  @RequestParam(required = false) UUID idCriador,
                                  @RequestParam(required = false) UUID idTecnico) {
         List<ChamadoDTO> chamados = service.filtrar(titulo, categoria, prioridade, dataCriacao, idCriador, idTecnico).stream()
-        .map(chamado -> new ChamadoDTO(chamado.getTitulo(), chamado.getDescricao(), chamado.getCategoria(), chamado.getPrioridade(), chamado.getUsuarioCriador().getId()))
+        .map(chamado -> new ChamadoDTO(chamado.getTitulo(), chamado.getDescricao(), chamado.getCategoria(), chamado.getPrioridade(), chamado.getUsuarioCriador().getId(), chamado.getId()))
         .toList();
         return ResponseEntity.ok(chamados);
     }

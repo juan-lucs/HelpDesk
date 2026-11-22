@@ -8,7 +8,7 @@ import com.juanlucas.helpdesk.Model.Entity.Chamado;
 import java.util.UUID;
 
 public record ChamadoDTO(String titulo, String descricao, CategoriaChamado categoria,
-                         PrioridadeChamado prioridade, UUID usuarioCriadorId) {
+                         PrioridadeChamado prioridade, UUID usuarioCriadorId, UUID idChamado) {
     public Chamado mapearparaChamado() {
         var c = new Chamado();
         c.setTitulo(this.titulo);
