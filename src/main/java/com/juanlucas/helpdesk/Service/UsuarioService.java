@@ -1,10 +1,12 @@
 package com.juanlucas.helpdesk.Service;
 
 import com.juanlucas.helpdesk.Exception.EmailJaCadastradoException;
+import com.juanlucas.helpdesk.Model.Entity.Chamado;
 import com.juanlucas.helpdesk.Model.Entity.Tecnico;
 import com.juanlucas.helpdesk.Model.Entity.Usuario;
 import com.juanlucas.helpdesk.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
@@ -47,7 +49,4 @@ public class UsuarioService {
         return repository.findTecnicoByid(idTec);
     }
 
-    public List<Tecnico> pegarTodosTecnicos(){
-        return repository.buscarTecnicos();
-    }
 }
