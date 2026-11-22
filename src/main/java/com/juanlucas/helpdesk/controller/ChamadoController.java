@@ -66,7 +66,7 @@ public class ChamadoController {
         return ResponseEntity.ok(chamados);
     }
 
-    @PatchMapping("/atribuirtecnicochamado")
+    @PatchMapping("/atribuirTecnicoChamado")
     public ResponseEntity<Void> atribuirTecnico(@RequestParam String idChamado, String idTecnico) {
         service.atribuirTecnico(idChamado, idTecnico);
         return ResponseEntity.noContent().build();
