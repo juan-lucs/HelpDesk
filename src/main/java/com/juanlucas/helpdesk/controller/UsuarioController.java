@@ -13,6 +13,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.util.UUID;
 
+// TODO: revisar erros, validação e rotas; consultar usuários e técnicos no contrato-api.md.
 @RestController
 @RequestMapping("usuario")
 @RequiredArgsConstructor
@@ -83,6 +84,5 @@ public class UsuarioController {
         // nomes antes do -> são PARÂMETROS de uma expressão lambda.
         // Eles RECEBEM o valor que será usado no código depois da seta.
     }
-
 
 }

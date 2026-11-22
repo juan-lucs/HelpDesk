@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+// TODO: adequar rotas e DTOs de entrada/resposta; consultar chamados no contrato-api.md.
 @RestController
 @RequestMapping("/chamado")
 @RequiredArgsConstructor

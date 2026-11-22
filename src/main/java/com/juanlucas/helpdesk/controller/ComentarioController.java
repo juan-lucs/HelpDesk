@@ -12,6 +12,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 
+// TODO: adequar rota e expor consultas; consultar comentários no contrato-api.md.
 @RestController
 @RequestMapping("/comentarios")
 @RequiredArgsConstructor

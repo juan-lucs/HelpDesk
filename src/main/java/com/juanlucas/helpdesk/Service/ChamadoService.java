@@ -28,6 +28,7 @@ public class ChamadoService {
     private final UsuarioRepository repositoryUsuario;
     private final HistoricoService serviceHistorico;
 
+    // TODO: garantir status inicial ABERTO; consultar abertura de chamados no contrato-api.md.
     @Transactional // IMPORTANTE PARA GARANTIR QUE O CHAMADO VAI SER SALVO JUNTO COM A ALTERAÇÃO DO HISTÓRICO
     public void criarChamado(Chamado c, UUID idUsuario) { // Chamado vem com titulo, descricao, categoria, prioridade e Status já definidos
         var usuario = repositoryUsuario.findById(idUsuario)

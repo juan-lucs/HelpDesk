@@ -24,6 +24,7 @@ public class ComentarioService {
     private final ChamadoRepository repositoryChamado;
     private final UsuarioRepository repositoryUsuario;
 
+    // TODO: registrar comentário no histórico na mesma transação; consultar comentários no contrato-api.md.
     @Transactional
     public void criarComentario(ComentariosChamado com, String idChamado, String idAutor) throws ChamadoNaoEncontradoException{
         var chamado = repositoryChamado.findById(UUID.fromString(idChamado)).orElseThrow(() -> new ChamadoNaoEncontradoException("Chamado não existe!"));
