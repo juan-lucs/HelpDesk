@@ -37,14 +37,19 @@ public class UsuarioController {
     }
 
     @PostMapping("/tecnico")
-    public ResponseEntity<Void> salvarTecnico(@RequestBody TecnicoDTO tecnico) {
-        var tecnicoEntidade = tecnico.mapearparaTenico();
-        service.salvarTecnico(tecnicoEntidade);
+    public ResponseEntity<?> salvarTecnico(@RequestBody TecnicoDTO tecnico) {
+        try {
+            var tecnicoEntidade = tecnico.mapearparaTenico();
+            service.salvarTecnico(tecnicoEntidade);
 
-        // http://localhost:8080/tecnico/ID DO USUARIO QUE FOI CRIADO PELO BANCOOO
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(tecnicoEntidade.getId()).toUri();
-        return ResponseEntity.created(location).build();
-    }
+            // http://localhost:8080/tecnico/ID DO USUARIO QUE FOI CRIADO PELO BANCOOO
+            URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(tecnicoEntidade.getId()).toUri();
+            return ResponseEntity.created(location).build();
+        } catch (EmailJaCadastradoException e) {
+            var erroDTO = ErroResposta.conflito(e.getMessage()); // E-mail duplicado é 409; validação de campos é 422 (contrato-api.md).
+            return ResponseEntity.status(erroDTO.status()).body(erroDTO);
+        }
+        }
 
     @GetMapping("{id}")
     public ResponseEntity<UsuarioDTO> pegarUsuarioPorId(@PathVariable("id") String id) {
